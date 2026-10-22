@@ -1,0 +1,261 @@
+{
+  "users": {
+    "user_123": {
+      "id": "user_123",
+      "email": "user@example.com",
+      "balance": 3.3999999999999995
+    }
+  },
+  "orders": [
+    {
+      "id": 1055751426,
+      "userId": "user_123",
+      "phone": "+13682062707",
+      "service": "google",
+      "country": "canada",
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T11:05:26.914Z"
+    },
+    {
+      "id": 1055758742,
+      "userId": "user_123",
+      "phone": "+6283132236216",
+      "service": "google",
+      "country": "indonesia",
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T11:18:31.153Z"
+    },
+    {
+      "id": 1055759220,
+      "userId": "user_123",
+      "phone": "+6283138059560",
+      "service": "google",
+      "country": "indonesia",
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T11:19:18.193Z"
+    },
+    {
+      "id": 1055760062,
+      "userId": "user_123",
+      "phone": "+6283153766319",
+      "service": "google",
+      "country": "indonesia",
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T11:20:48.804Z"
+    },
+    {
+      "id": 1055761427,
+      "userId": "user_123",
+      "phone": "+12509870727",
+      "service": "google",
+      "country": "canada",
+      "price": 0.15,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T11:23:07.954Z"
+    },
+    {
+      "id": 1055764792,
+      "userId": "user_123",
+      "phone": "+17822042219",
+      "service": "google",
+      "country": "canada",
+      "price": 0.15,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T11:29:03.320Z"
+    },
+    {
+      "id": 1055771342,
+      "userId": "user_123",
+      "phone": "+6283899973776",
+      "service": "google",
+      "country": "indonesia",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T11:41:00.577Z"
+    },
+    {
+      "id": 1055776656,
+      "userId": "user_123",
+      "phone": "+6285126471068",
+      "service": "google",
+      "country": "indonesia",
+      "price": 0.1,
+      "status": "BANNED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T11:50:24.954Z"
+    },
+    {
+      "id": 1055785472,
+      "userId": "user_123",
+      "phone": "+6285138482471",
+      "service": "google",
+      "country": "indonesia",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T12:06:02.161Z"
+    },
+    {
+      "id": 1055786633,
+      "userId": "user_123",
+      "phone": "+6283191139636",
+      "service": "google",
+      "country": "indonesia",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T12:08:06.153Z"
+    },
+    {
+      "id": 1055787296,
+      "userId": "user_123",
+      "phone": "+6283849606977",
+      "service": "google",
+      "country": "indonesia",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T12:09:24.627Z"
+    },
+    {
+      "id": 1055792763,
+      "userId": "user_123",
+      "phone": "+6285119298445",
+      "service": "google",
+      "country": "indonesia",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T12:19:38.923Z"
+    },
+    {
+      "id": 1055811590,
+      "userId": "user_123",
+      "phone": "+447737156188",
+      "service": "openai",
+      "country": "england",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T12:46:20.506Z"
+    },
+    {
+      "id": 1055813905,
+      "userId": "user_123",
+      "phone": "+447882706568",
+      "service": "openai",
+      "country": "england",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T12:50:22.445Z"
+    },
+    {
+      "id": 1055820255,
+      "userId": "user_123",
+      "phone": "+447737165743",
+      "service": "openai",
+      "country": "england",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T12:58:41.493Z"
+    },
+    {
+      "id": 1055826223,
+      "userId": "user_123",
+      "phone": "+447737151945",
+      "service": "openai",
+      "country": "england",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T13:06:14.567Z"
+    },
+    {
+      "id": 1055827549,
+      "userId": "user_123",
+      "phone": "+17282175664",
+      "service": "openai",
+      "country": "usa",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T13:07:22.207Z"
+    },
+    {
+      "id": 1055838416,
+      "userId": "user_123",
+      "phone": "+6285123989526",
+      "service": "telegram",
+      "country": "indonesia",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T13:17:38.355Z"
+    },
+    {
+      "id": 1055839508,
+      "userId": "user_123",
+      "phone": "+6285861600709",
+      "service": "telegram",
+      "country": "indonesia",
+      "price": 0.1,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T13:19:25.418Z"
+    },
+    {
+      "id": 1056156619,
+      "userId": "user_123",
+      "phone": "+447533895807",
+      "service": "telegram",
+      "country": "england",
+      "price": 0.8,
+      "status": "CANCELED",
+      "smsCode": null,
+      "createdAt": "2026-07-23T22:59:10.320Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "TRX_1784846247412308",
+      "invoiceId": "TRX_1784846247412308",
+      "userId": "user_123",
+      "amountUsd": 1,
+      "amountToman": 191208,
+      "gateway": "wallex",
+      "status": "PENDING",
+      "createdAt": "2026-07-23T22:37:27.412Z"
+    },
+    {
+      "id": "TRX_1784845374329618",
+      "invoiceId": "TRX_1784845374329618",
+      "userId": "user_123",
+      "amountUsd": 2.33,
+      "amountToman": 445515,
+      "gateway": "wallex",
+      "status": "SUCCESS",
+      "createdAt": "2026-07-23T22:22:54.329Z",
+      "txid": "AUTO_WALLEX_VERIFIED_1784845379017"
+    },
+    {
+      "id": "TRX_1784845241179980",
+      "invoiceId": "TRX_1784845241179980",
+      "userId": "user_123",
+      "amountUsd": 2.33,
+      "amountToman": 445515,
+      "gateway": "wallex",
+      "status": "SUCCESS",
+      "createdAt": "2026-07-23T22:20:41.179Z",
+      "txid": "AUTO_WALLEX_VERIFIED_1784845323444"
+    }
+  ]
+}

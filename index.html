@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سامانه ساخت و دریافت شماره مجازی بین‌المللی</title>
+    <!-- Compiled Production Tailwind CSS -->
+    <link rel="stylesheet" href="/style.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Vazirmatn Font -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+    </style>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 left-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-tr from-brand-600 to-indigo-600 text-white p-2.5 rounded-xl shadow-lg shadow-brand-500/20">
+                        <i class="fa-solid font-bold fa-sim-card text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-lg text-slate-900 tracking-tight">سیم‌جت <span class="text-xs px-2 py-0.5 bg-brand-100 text-brand-700 rounded-full font-normal">نسخه آزمایشی</span></span>
+                        <p class="text-xs text-slate-500">پلتفرم شماره مجازی بین‌المللی</p>
+                    </div>
+                </div>
+
+                <!-- Balance & Profile -->
+                <div class="flex items-center gap-4">
+                    <!-- Wallet Balance -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-1.5 px-3 flex items-center gap-3">
+                        <div class="text-right">
+                            <div class="text-[10px] text-slate-500 font-medium">موجودی کیف‌پول</div>
+                            <div class="text-sm font-bold text-emerald-600 dir-ltr" id="user-balance">$ 0.00</div>
+                        </div>
+                        <button onclick="openWalletModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white w-8 h-8 rounded-lg flex items-center justify-center transition shadow-sm">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- User Profile Avatar -->
+                    <div class="flex items-center gap-2 border-r border-slate-200 pr-4">
+                        <img src="https://placehold.co/100x100/0284c7/ffffff?text=U" class="w-9 h-9 rounded-full ring-2 ring-brand-500/20" alt="User">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Sidebar Navigation -->
+        <aside class="lg:col-span-3 space-y-4">
+            <nav class="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-sm space-y-1">
+                <button onclick="switchTab('buy')" id="nav-buy" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition bg-brand-50 text-brand-700 font-semibold">
+                    <i class="fa-solid fa-cart-plus text-lg"></i>
+                    <span>خرید شماره جدید</span>
+                </button>
+                <button onclick="switchTab('active')" id="nav-active" class="tab-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-50">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+                        <span>شماره‌های فعال</span>
+                    </div>
+                    <span id="active-badge" class="bg-brand-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">1</span>
+                </button>
+                <button onclick="switchTab('history')" id="nav-history" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-receipt text-lg"></i>
+                    <span>تاریخچه پیامک‌ها</span>
+                </button>
+                <button onclick="switchTab('guide')" id="nav-guide" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-code text-lg text-indigo-500"></i>
+                    <span>معماری و نحوه ساخت (API)</span>
+                </button>
+            </nav>
+
+            <!-- Quick Stats Card -->
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-5 shadow-sm space-y-3">
+                <div class="flex justify-between items-center text-xs text-slate-400">
+                    <span>آمار کلی شما</span>
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <div class="bg-white/5 p-3 rounded-xl border border-white/10">
+                        <div class="text-xs text-slate-400">کل خریده‌ها</div>
+                        <div class="text-lg font-bold mt-1">24 عدد</div>
+                    </div>
+                    <div class="bg-white/5 p-3 rounded-xl border border-white/10">
+                        <div class="text-xs text-slate-400">موفقیت دریافت</div>
+                        <div class="text-lg font-bold text-emerald-400 mt-1">96%</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="lg:col-span-9 space-y-6">
+
+            <!-- TAB 1: BUY NUMBER -->
+            <div id="tab-buy" class="tab-content space-y-6">
+                
+                <!-- Service & Country Selector -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-6">
+                    <div class="border-b border-slate-100 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div>
+                            <h1 class="text-xl font-bold text-slate-900">خرید شماره مجازی دریافت SMS</h1>
+                            <p class="text-sm text-slate-500 mt-1">دسترسی مستقیم به بیش از ۱۵۰ کشور و ۴۰۰+ سرویس سایت مادر 5SIM</p>
+                        </div>
+                        <div id="live-api-status" class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-3 py-1.5 rounded-xl text-xs font-semibold self-start md:self-auto">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                            <span>در حال دریافت داده‌های زنده 5SIM...</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Select Service -->
+                    <div class="space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <label class="block text-sm font-semibold text-slate-700">۱. انتخاب سرویس یا اپلیکیشن:</label>
+                            <div class="relative w-full sm:w-64">
+                                <input type="text" id="service-search" oninput="onServiceSearch()" placeholder="جستجوی سرویس (مثلاً telegram)..." 
+                                       class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Service Category Pills -->
+                        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar" id="service-category-pills">
+                            <button onclick="setServiceCategory('all')" id="cat-all" class="service-cat-btn px-3 py-1.5 rounded-lg border font-medium whitespace-nowrap bg-brand-50 border-brand-500 text-brand-700">همه</button>
+                            <button onclick="setServiceCategory('popular')" id="cat-popular" class="service-cat-btn px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap">🔥 محبوب‌ترین‌ها</button>
+                            <button onclick="setServiceCategory('messenger')" id="cat-messenger" class="service-cat-btn px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap">💬 پیام‌رسان‌ها</button>
+                            <button onclick="setServiceCategory('social')" id="cat-social" class="service-cat-btn px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap">📲 شبکه‌های اجتماعی</button>
+                            <button onclick="setServiceCategory('ai')" id="cat-ai" class="service-cat-btn px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap">🤖 هوش مصنوعی و ابزارها</button>
+                            <button onclick="setServiceCategory('finance')" id="cat-finance" class="service-cat-btn px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap">💳 مالی و کریپتو</button>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 max-h-72 overflow-y-auto p-1 border border-slate-100 rounded-xl" id="service-grid">
+                            <!-- Services populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Select Country -->
+                    <div class="space-y-3">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-slate-50/80 p-3 rounded-xl border border-slate-200/60">
+                            <label class="block text-sm font-semibold text-slate-700">۲. انتخاب کشور ارائه دهنده:</label>
+                            
+                            <!-- Filter Controls Bar -->
+                            <div class="flex flex-wrap items-center gap-2 text-xs">
+                                <!-- Search Bar -->
+                                <div class="relative flex-1 min-w-[140px]">
+                                    <input type="text" id="country-search" oninput="onCountrySearch()" placeholder="جستجوی کشور..." 
+                                           class="w-full pl-7 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+                                </div>
+
+                                <!-- Sort Mode Dropdown -->
+                                <select id="country-sort" onchange="onSortChange()" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-brand-500 font-medium cursor-pointer">
+                                    <option value="name-asc" selected>🔤 حروف الفبا (A-Z)</option>
+                                    <option value="stock-desc">📦 بیشترین موجودی</option>
+                                    <option value="price-asc">💲 ارزان‌ترین قیمت</option>
+                                    <option value="price-desc">💎 گران‌ترین قیمت</option>
+                                </select>
+
+                                <!-- In Stock Only Toggle -->
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-slate-700 font-medium select-none">
+                                    <input type="checkbox" id="in-stock-only" onchange="onInStockToggle()" class="rounded text-brand-600 focus:ring-brand-500 w-3.5 h-3.5">
+                                    <span>فقط موجودها</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Continent Filter Pills -->
+                        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar" id="continent-pills">
+                            <button onclick="setContinentFilter('all')" id="cont-all" class="cont-btn px-2.5 py-1 rounded-lg border font-medium whitespace-nowrap bg-slate-800 border-slate-800 text-white">همه مناطق</button>
+                            <button onclick="setContinentFilter('fav')" id="cont-fav" class="cont-btn px-2.5 py-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap text-amber-600">⭐ نشان‌شده‌ها</button>
+                            <button onclick="setContinentFilter('america')" id="cont-america" class="cont-btn px-2.5 py-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap">🇺🇸 آمریکا</button>
+                            <button onclick="setContinentFilter('europe')" id="cont-europe" class="cont-btn px-2.5 py-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap">🇪🇺 اروپا</button>
+                            <button onclick="setContinentFilter('asia')" id="cont-asia" class="cont-btn px-2.5 py-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap">🌏 آسیا و اقیانوسیه</button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 max-h-80 overflow-y-auto p-1 border border-slate-100 rounded-xl" id="country-grid">
+                            <!-- Countries populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Order Confirmation Footer -->
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4 w-full sm:w-auto">
+                            <div class="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xl shadow-sm" id="summary-icon">
+                                <i class="fa-brands fa-whatsapp text-emerald-500"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-500">سرویس انتخاب شده:</div>
+                                <div class="font-bold text-slate-800 text-sm" id="summary-text">Telegram - آمریکا (USA)</div>
+                                <div class="text-[11px] text-slate-400" id="summary-stock">موجودی: -- شماره</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-0 border-slate-200 pt-3 sm:pt-0">
+                            <div class="text-left">
+                                <div class="text-xs text-slate-500">قیمت نهایی:</div>
+                                <div class="text-xl font-extrabold text-brand-600 dir-ltr" id="summary-price">$ 0.00</div>
+                            </div>
+
+                            <button onclick="purchaseNumber()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-xl transition shadow-lg shadow-brand-500/25 flex items-center gap-2">
+                                <i class="fa-solid fa-bolt"></i>
+                                <span>دریافت فوری شماره</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i class="fa-solid fa-shield-check text-lg"></i></div>
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-800">ضمانت بازگشت وجه</h4>
+                            <p class="text-xs text-slate-500 mt-0.5">در صورت عدم دریافت پیامک، هزینه خودکار عودت داده می‌شود.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                        <div class="p-2 bg-amber-50 text-amber-600 rounded-lg"><i class="fa-solid fa-stopwatch text-lg"></i></div>
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-800">مهلت ۲۰ دقیقه‌ای</h4>
+                            <p class="text-xs text-slate-500 mt-0.5">برای هر شماره ۲۰ دقیقه فرصت دریافت کد فعال‌سازی دارید.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                        <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i class="fa-solid fa-network-wired text-lg"></i></div>
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-800">اپراتورهای واقعی</h4>
+                            <p class="text-xs text-slate-500 mt-0.5">شماره‌ها از سیم‌کارت‌های واقعی اپراتورهای بین‌المللی است.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: ACTIVE NUMBERS -->
+            <div id="tab-active" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">شماره‌های فعال و صندوق دریافت پیامک</h2>
+                            <p class="text-xs text-slate-500">پیامک‌های دریافتی شما به‌صورت زنده در این بخش نمایش داده می‌شوند.</p>
+                        </div>
+                        <button onclick="renderActiveNumbers()" class="text-xs text-brand-600 hover:text-brand-700 flex items-center gap-1 font-semibold">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                            <span>به‌روزرسانی</span>
+                        </button>
+                    </div>
+
+                    <!-- Active Numbers List Container -->
+                    <div id="active-list" class="space-y-4">
+                        <!-- Items rendered by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: TRANSACTION HISTORY -->
+            <div id="tab-history" class="tab-content hidden space-y-6">
+                <!-- Section A: Wallet Charge Transactions -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">تاریخچه شارژهای کیف‌پول (تراکنش‌های مالی)</h2>
+                            <p class="text-xs text-slate-500">لیست واریزها و فاکتورهای پرداخت شما از طریق والکس و درگاه‌ها</p>
+                        </div>
+                        <button onclick="fetchTransactions()" class="text-xs text-brand-600 hover:text-brand-700 flex items-center gap-1 font-semibold">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                            <span>به‌روزرسانی</span>
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-sm">
+                            <thead class="bg-slate-50 text-slate-500 font-medium">
+                                <tr>
+                                    <th class="p-3 rounded-r-lg">کد تراکنش / فاکتور</th>
+                                    <th class="p-3">روش پرداخت</th>
+                                    <th class="p-3">مبلغ (دلار)</th>
+                                    <th class="p-3">معادل پرداخت (تومان)</th>
+                                    <th class="p-3">تاریخ</th>
+                                    <th class="p-3 rounded-l-lg">وضعیت</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700" id="transactions-table">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section B: SMS Orders History -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                    <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4">تاریخچه شماره‌ها و پیامک‌های دریافتی</h2>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-sm">
+                            <thead class="bg-slate-50 text-slate-500 font-medium">
+                                <tr>
+                                    <th class="p-3 rounded-r-lg">سرویس</th>
+                                    <th class="p-3">شماره تلفن</th>
+                                    <th class="p-3">کشور</th>
+                                    <th class="p-3">کد دریافتی</th>
+                                    <th class="p-3">هزینه</th>
+                                    <th class="p-3 rounded-l-lg">وضعیت</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700" id="history-table">
+                                <tr>
+                                    <td class="p-3 flex items-center gap-2"><i class="fa-brands fa-telegram text-sky-500"></i> تلگرام</td>
+                                    <td class="p-3 font-mono dir-ltr text-right">+1 (202) 555-0143</td>
+                                    <td class="p-3">🇺🇸 آمریکا</td>
+                                    <td class="p-3 font-mono font-bold text-brand-600">84920</td>
+                                    <td class="p-3 dir-ltr text-right">$ 0.60</td>
+                                    <td class="p-3"><span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-md font-semibold">تکمیل شده</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 flex items-center gap-2"><i class="fa-brands fa-openai text-emerald-600"></i> OpenAI (ChatGPT)</td>
+                                    <td class="p-3 font-mono dir-ltr text-right">+44 7911 123456</td>
+                                    <td class="p-3">🇬🇧 انگلستان</td>
+                                    <td class="p-3 font-mono font-bold text-brand-600">310492</td>
+                                    <td class="p-3 dir-ltr text-right">$ 0.85</td>
+                                    <td class="p-3"><span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-md font-semibold">تکمیل شده</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: ARCHITECTURE GUIDE -->
+            <div id="tab-guide" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">چگونه اپلیکیشن شماره مجازی بسازیم؟ (راهنمای فنی)</h2>
+                        <p class="text-sm text-slate-500 mt-1">پاسخ به سوال شما: معماری کامل ساخت این سیستم از صفر تا صد</p>
+                    </div>
+
+                    <!-- Flow Diagram -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="w-10 h-10 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold">۱</div>
+                            <h3 class="font-bold text-slate-800 text-sm">فرانت‌اند (رابط کاربر)</h3>
+                            <p class="text-xs text-slate-500 mt-1">طراحی وب یا اپلیکیشن موبایل (Flutter / React) جهت درخواست و نمایش SMS.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold">۲</div>
+                            <h3 class="font-bold text-slate-800 text-sm">سرور بک‌اند (Backend)</h3>
+                            <p class="text-xs text-slate-500 mt-1">Node.js یا Python جهت مدیریت کاربران، کیف پول و ارتباط امن با API تامین‌کننده.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold">۳</div>
+                            <h3 class="font-bold text-slate-800 text-sm">سرویس‌های تامین‌کننده</h3>
+                            <p class="text-xs text-slate-500 mt-1">اتصال به APIهای قدرتمند بین‌المللی مثل 5sim.net یا SMS-Activate.org.</p>
+                        </div>
+                    </div>
+
+                    <!-- Code Example Snippet -->
+                    <div class="space-y-3">
+                        <h3 class="font-bold text-slate-800 text-sm">نمونه کد اتصال بک‌اند به API اصلی (Node.js/Axios):</h3>
+                        <div class="bg-slate-900 text-slate-100 rounded-xl p-4 font-mono text-xs dir-ltr overflow-x-auto">
+<pre><code>// 1. دریافت لیست شماره موجود
+const axios = require('axios');
+const API_KEY = 'YOUR_5SIM_OR_SMS_ACTIVATE_API_KEY';
+
+async function buyVirtualNumber(country, service) {
+  try {
+    const response = await axios.get(`https://5sim.net/v1/user/buy/activation/${country}/any/${service}`, {
+      headers: { 'Authorization': `Bearer ${API_KEY}`, 'Accept': 'application/json' }
+    });
+    
+    // پاسخ شامل شماره تلفن و ID سفارش است
+    console.log('Phone Number:', response.data.phone); 
+    return response.data;
+  } catch (error) {
+    console.error('Error buying number:', error);
+  }
+}
+
+// 2. بررسی پیامک دریافتی (Polling / Webhook)
+async function checkSMS(orderId) {
+  const checkUrl = `https://5sim.net/v1/user/check/${orderId}`;
+  const res = await axios.get(checkUrl, { headers: { 'Authorization': `Bearer ${API_KEY}` } });
+  if (res.data.sms && res.data.sms.length > 0) {
+    console.log('OTP Code Received:', res.data.sms[0].code);
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- API Providers Recommended -->
+                    <div class="space-y-3">
+                        <h3 class="font-bold text-slate-800 text-sm">برترین ارائه‌دهندگان API شماره مجازی جهت استفاده در اپلیکیشن شما:</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="p-3 border border-slate-200 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800">5sim.net</div>
+                                    <div class="text-xs text-slate-500">محبوب‌ترین و ارزان‌ترین API شماره مجازی</div>
+                                </div>
+                                <span class="bg-slate-100 text-xs px-2 py-1 rounded font-mono">REST API</span>
+                            </div>
+                            <div class="p-3 border border-slate-200 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800">SMS-Activate.org</div>
+                                    <div class="text-xs text-slate-500">تنوع بسیار بالا در اپراتورها و سرویس‌ها</div>
+                                </div>
+                                <span class="bg-slate-100 text-xs px-2 py-1 rounded font-mono">REST API</span>
+                            </div>
+                            <div class="p-3 border border-slate-200 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800">Twilio / Telnyx</div>
+                                    <div class="text-xs text-slate-500">مناسب شماره‌های دائمی و اختصاصی (اجاره‌ای)</div>
+                                </div>
+                                <span class="bg-slate-100 text-xs px-2 py-1 rounded font-mono">Enterprise</span>
+                            </div>
+                            <div class="p-3 border border-slate-200 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800">OnlineSim.ru</div>
+                                    <div class="text-xs text-slate-500">مناسب برای سرویس‌های حساس مانند OpenAI</div>
+                                </div>
+                                <span class="bg-slate-100 text-xs px-2 py-1 rounded font-mono">REST API</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Recharge Wallet Modal -->
+    <div id="wallet-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 mx-4 transform scale-95 transition-transform duration-200">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-lg">شارژ حساب و کیف‌پول</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">افزایش موجودی دلاری با پرداخت آنلاین تتر یا کارت بانکی</p>
+                </div>
+                <button onclick="closeWalletModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Current Balance & Live Rate Header -->
+            <div class="bg-slate-50 border border-slate-200/80 p-3 rounded-xl flex items-center justify-between text-xs">
+                <div>
+                    <span class="text-slate-500 block">موجودی فعلی شما:</span>
+                    <span class="font-bold text-emerald-600 text-sm dir-ltr" id="modal-current-balance">$ 0.00</span>
+                </div>
+                <div class="text-left border-r border-slate-200 pr-3">
+                    <span class="text-slate-500 block">نرخ زنده تتر والکس:</span>
+                    <span class="font-bold text-brand-600 font-mono" id="modal-wallex-rate">-- تومان</span>
+                </div>
+            </div>
+
+            <!-- Quick Amounts -->
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-700">انتخاب سریع مبلغ شارژ (دلار):</label>
+                <div class="grid grid-cols-5 gap-1.5">
+                    <button onclick="setAmount(5)" class="border border-slate-200 hover:border-brand-500 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-700 transition">$ 5</button>
+                    <button onclick="setAmount(10)" class="border border-slate-200 hover:border-brand-500 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-700 transition">$ 10</button>
+                    <button onclick="setAmount(25)" class="border border-slate-200 hover:border-brand-500 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-700 transition">$ 25</button>
+                    <button onclick="setAmount(50)" class="border border-slate-200 hover:border-brand-500 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-700 transition">$ 50</button>
+                    <button onclick="setAmount(100)" class="border border-slate-200 hover:border-brand-500 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-700 transition">$ 100</button>
+                </div>
+            </div>
+
+            <!-- Custom Input with Live Toman Conversion -->
+            <div class="space-y-1.5">
+                <label class="block text-xs font-semibold text-slate-700">مبلغ دلخواه:</label>
+                <div class="relative">
+                    <input type="number" id="custom-amount" value="10" min="1" oninput="onModalAmountInput()"
+                           class="w-full border border-slate-200 rounded-xl p-3 pr-8 text-center font-extrabold text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 dir-ltr text-lg">
+                    <span class="absolute left-4 top-3.5 font-bold text-slate-400 text-sm">$</span>
+                </div>
+                <div class="text-center text-xs text-slate-500 font-medium pt-1" id="toman-equivalent-display">
+                    معادل پرداخت: <span class="font-bold text-brand-600 font-mono" id="modal-toman-val">--</span> تومان
+                </div>
+            </div>
+
+            <!-- Payment Gateway Selector -->
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-700">درگاه پرداخت:</label>
+                <div class="space-y-2">
+                    <label class="flex items-center justify-between p-3 border border-brand-500 bg-brand-50/40 rounded-xl cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <input type="radio" name="gateway" value="wallex" checked class="text-brand-600 focus:ring-brand-500">
+                            <div>
+                                <div class="text-xs font-bold text-slate-800">درگاه اختصاصی صرافی والکس (Wallex Pay)</div>
+                                <div class="text-[10px] text-slate-500">پرداخت سریع با تتر / رمز ارز (USDT)</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-coins text-amber-500 text-lg"></i>
+                    </label>
+                    <label class="flex items-center justify-between p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+                        <div class="flex items-center gap-3">
+                            <input type="radio" name="gateway" value="shetab" class="text-brand-600 focus:ring-brand-500">
+                            <div>
+                                <div class="text-xs font-bold text-slate-800">کارت بانکی شتابی (ریالی)</div>
+                                <div class="text-[10px] text-slate-500">پرداخت با کلیه کارت‌های عضو شتاب</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-credit-card text-blue-500 text-lg"></i>
+                    </label>
+                </div>
+            </div>
+
+            <button onclick="confirmTopUp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 text-sm">
+                <i class="fa-solid fa-lock"></i>
+                <span>ایجاد فاکتور و پرداخت</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Tether Payment Invoice Modal -->
+    <div id="tether-invoice-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 mx-4 transform scale-95 transition-transform duration-200">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-coins text-amber-500"></i>
+                        <span>فاکتور واریز تتر (BSC / BEP20)</span>
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">واریز مستقیم تتر بر روی شبکه BSC به کیف‌پول صرافی والکس</p>
+                </div>
+                <button onclick="closeTetherInvoiceModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Invoice Summary Box -->
+            <div class="bg-emerald-50/60 border border-emerald-200/80 p-4 rounded-xl space-y-2 text-xs">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-600">شماره فاکتور:</span>
+                    <span class="font-mono font-bold text-slate-800" id="inv-id">--</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-600">مبلغ شارژ (تتر):</span>
+                    <span class="font-extrabold text-emerald-600 text-sm dir-ltr" id="inv-amount-usd">$ 0.00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-600">معادل پرداخت (تومان):</span>
+                    <span class="font-bold text-slate-800 font-mono" id="inv-amount-toman">-- تومان</span>
+                </div>
+            </div>
+
+            <!-- Network Selector Tabs -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-slate-700 text-center">انتخاب شبکه بلاک‌چین جهت واریز:</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="switchInvoiceNetwork('bsc')" id="net-btn-bsc" class="border border-brand-500 bg-brand-50 text-brand-700 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <span>🟡 شبکه BSC (BEP20)</span>
+                    </button>
+                    <button onclick="switchInvoiceNetwork('trc20')" id="net-btn-trc20" class="border border-slate-200 text-slate-600 hover:border-brand-500 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+                        <span>🔴 شبکه TRC20 (ترون)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Deposit Address & QR Code -->
+            <div class="space-y-3 text-center">
+                <div class="text-xs font-semibold text-slate-500" id="inv-net-label">آدرس واریز شبکه: <strong class="text-slate-800">BSC (BEP20)</strong></div>
+                
+                <!-- QR Code image -->
+                <div class="flex justify-center">
+                    <img id="inv-qr" src="" alt="QR Code" class="w-36 h-36 border border-slate-200 rounded-xl p-1 bg-white shadow-sm">
+                </div>
+
+                <!-- Copyable Wallet Address -->
+                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                    <input type="text" id="inv-address" readonly class="w-full bg-transparent font-mono text-xs text-slate-800 font-bold focus:outline-none dir-ltr text-center">
+                    <button onclick="copyWalletAddress()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap flex items-center gap-1">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>کپی آدرس</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submit TXID / Hash Section -->
+            <div class="border-t border-slate-100 pt-4 space-y-2.5">
+                <label class="block text-xs font-semibold text-slate-700">کد پیگیری تراکنش / TXID <span class="text-slate-400 font-normal">(اختیاری)</span>:</label>
+                <div class="space-y-2">
+                    <input type="text" id="inv-txid" placeholder="در صورت تمایل کد پیگیری واریز تتر را وارد کنید..."
+                           class="w-full border border-slate-200 rounded-xl p-3 font-mono text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 dir-ltr">
+                    <button onclick="submitTrc20Txid()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>بررسی واریز و شارژ اتوماتیک کیف‌پول</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // App State
+        let state = {
+            balance: 0,
+            selectedService: 'telegram',
+            selectedCountry: 'usa',
+            activeNumbers: [],
+            rawPrices: null,
+            services: [],
+            countries: [],
+            serviceQuery: '',
+            countryQuery: '',
+            serviceCategory: 'all',
+            sortMode: 'name-asc',
+            inStockOnly: false,
+            continentFilter: 'all',
+            favorites: JSON.parse(localStorage.getItem('fav_countries') || '[]'),
+            tomanRate: 191208,
+            profitPercentage: 20
+        };
+
+        // Continent Mapping
+        const CONTINENT_MAP = {
+            america: ['usa', 'canada', 'brazil', 'argentina', 'colombia', 'mexico'],
+            europe: ['uk', 'germany', 'france', 'netherlands', 'poland', 'spain', 'italy', 'sweden', 'switzerland', 'russia'],
+            asia: ['china', 'india', 'turkey', 'uae', 'afghanistan', 'indonesia', 'malaysia', 'thailand', 'philippines', 'singapore', 'australia']
+        };
+
+        // Service Category Rules
+        const CATEGORY_MAP = {
+            popular: ['telegram', 'whatsapp', 'openai', 'google', 'instagram', 'apple', 'tiktok', 'binance'],
+            messenger: ['telegram', 'whatsapp', 'viber', 'line', 'signal', 'imo', 'kakao', 'wechat'],
+            social: ['instagram', 'tiktok', 'twitter', 'facebook', 'discord', 'reddit', 'snapchat', 'linkedin', 'threads'],
+            ai: ['openai', 'claude', 'google', 'microsoft', 'apple', 'adobe', 'midjourney'],
+            finance: ['binance', 'paypal', 'wise', 'coinbase', 'stripe', 'pyypl', 'bybit', 'kucoin', 'okx']
+        };
+
+        // Static Dictionaries for Persian Names, Flags and Icons
+        const COUNTRY_MAP = {
+            usa: { name: 'آمریکا (USA)', flag: '🇺🇸', code: '+1' },
+            uk: { name: 'انگلستان (UK)', flag: '🇬🇧', code: '+44' },
+            russia: { name: 'روسیه (Russia)', flag: '🇷🇺', code: '+7' },
+            germany: { name: 'آلمان (Germany)', flag: '🇩🇪', code: '+49' },
+            france: { name: 'فرانسه (France)', flag: '🇫🇷', code: '+33' },
+            netherlands: { name: 'هلند (Netherlands)', flag: '🇳🇱', code: '+31' },
+            philippines: { name: 'فیلیپین (Philippines)', flag: '🇵🇭', code: '+63' },
+            poland: { name: 'لهستان (Poland)', flag: '🇵🇱', code: '+48' },
+            brazil: { name: 'برزیل (Brazil)', flag: '🇧🇷', code: '+55' },
+            canada: { name: 'کانادا (Canada)', flag: '🇨🇦', code: '+1' },
+            china: { name: 'چین (China)', flag: '🇨🇳', code: '+86' },
+            india: { name: 'هند (India)', flag: '🇮🇳', code: '+91' },
+            turkey: { name: 'ترکیه (Turkey)', flag: '🇹🇷', code: '+90' },
+            uae: { name: 'امارات (UAE)', flag: '🇦🇪', code: '+971' },
+            spain: { name: 'اسپانیا (Spain)', flag: '🇪🇸', code: '+34' },
+            italy: { name: 'ایتالیا (Italy)', flag: '🇮🇹', code: '+39' },
+            australia: { name: 'استرالیا (Australia)', flag: '🇦🇺', code: '+61' },
+            afghanistan: { name: 'افغانستان', flag: '🇦🇫', code: '+93' },
+            indonesia: { name: 'اندونزی', flag: '🇮🇩', code: '+62' },
+            malaysia: { name: 'مالزی', flag: '🇲🇾', code: '+60' },
+            thailand: { name: 'تایلند', flag: '🇹🇭', code: '+66' },
+            argentina: { name: 'آرژانتین', flag: '🇦🇷', code: '+54' },
+            colombia: { name: 'کلمبیا', flag: '🇨🇴', code: '+57' },
+            mexico: { name: 'مکزیک', flag: '🇲🇽', code: '+52' },
+            egypt: { name: 'مصر', flag: '🇪🇬', code: '+20' },
+            sweden: { name: 'سوئد', flag: '🇸🇪', code: '+46' },
+            switzerland: { name: 'سوئیس', flag: '🇨🇭', code: '+41' }
+        };
+
+        const SERVICE_MAP = {
+            telegram: { name: 'Telegram', icon: 'fa-brands fa-telegram text-sky-500', popular: 1 },
+            whatsapp: { name: 'WhatsApp', icon: 'fa-brands fa-whatsapp text-emerald-500', popular: 2 },
+            openai: { name: 'OpenAI / ChatGPT', icon: 'fa-brands fa-openai text-emerald-600', popular: 3 },
+            google: { name: 'Google / Gmail', icon: 'fa-brands fa-google text-red-500', popular: 4 },
+            instagram: { name: 'Instagram', icon: 'fa-brands fa-instagram text-pink-500', popular: 5 },
+            apple: { name: 'Apple ID', icon: 'fa-brands fa-apple text-slate-800', popular: 6 },
+            tiktok: { name: 'TikTok', icon: 'fa-brands fa-tiktok text-slate-900', popular: 7 },
+            binance: { name: 'Binance', icon: 'fa-solid fa-chart-line text-amber-500', popular: 8 },
+            uber: { name: 'Uber / Grab', icon: 'fa-solid fa-car text-slate-900', popular: 9 },
+            twitter: { name: 'X / Twitter', icon: 'fa-brands fa-x-twitter text-slate-900', popular: 10 },
+            facebook: { name: 'Facebook', icon: 'fa-brands fa-facebook text-blue-600', popular: 11 },
+            discord: { name: 'Discord', icon: 'fa-brands fa-discord text-indigo-500', popular: 12 },
+            microsoft: { name: 'Microsoft', icon: 'fa-brands fa-microsoft text-blue-500', popular: 13 },
+            netflix: { name: 'Netflix', icon: 'fa-solid fa-film text-red-600', popular: 14 },
+            steam: { name: 'Steam', icon: 'fa-brands fa-steam text-slate-800', popular: 15 },
+            amazon: { name: 'Amazon', icon: 'fa-brands fa-amazon text-amber-600', popular: 16 }
+        };
+
+        // Init Function
+        window.onload = async function() {
+            await fetchProfile();
+            await fetchWallexRate();
+            await fetchPrices();
+            renderActiveNumbers();
+            startTimers();
+        };
+
+        function toggleFavorite(e, countryId) {
+            e.stopPropagation();
+            if (state.favorites.includes(countryId)) {
+                state.favorites = state.favorites.filter(id => id !== countryId);
+            } else {
+                state.favorites.push(countryId);
+            }
+            localStorage.setItem('fav_countries', JSON.stringify(state.favorites));
+            renderCountries();
+        }
+
+        function setServiceCategory(cat) {
+            state.serviceCategory = cat;
+            document.querySelectorAll('.service-cat-btn').forEach(btn => {
+                btn.className = 'service-cat-btn px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap';
+            });
+            const activeBtn = document.getElementById(`cat-${cat}`);
+            if (activeBtn) {
+                activeBtn.className = 'service-cat-btn px-3 py-1.5 rounded-lg border font-medium whitespace-nowrap bg-brand-50 border-brand-500 text-brand-700';
+            }
+            renderServices();
+        }
+
+        function setContinentFilter(cont) {
+            state.continentFilter = cont;
+            document.querySelectorAll('.cont-btn').forEach(btn => {
+                btn.className = 'cont-btn px-2.5 py-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium whitespace-nowrap';
+            });
+            const activeBtn = document.getElementById(`cont-${cont}`);
+            if (activeBtn) {
+                activeBtn.className = 'cont-btn px-2.5 py-1 rounded-lg border font-medium whitespace-nowrap bg-slate-800 border-slate-800 text-white';
+            }
+            renderCountries();
+        }
+
+        function onSortChange() {
+            state.sortMode = document.getElementById('country-sort').value;
+            renderCountries();
+        }
+
+        function onInStockToggle() {
+            state.inStockOnly = document.getElementById('in-stock-only').checked;
+            renderCountries();
+        }
+
+        async function fetchWallexRate() {
+            try {
+                const res = await fetch('/api/wallex/rate');
+                const data = await res.json();
+                if (data.success && data.tomanRate) {
+                    state.tomanRate = data.tomanRate;
+                    state.profitPercentage = data.profitPercentage || 20;
+                    const modalRateEl = document.getElementById('modal-wallex-rate');
+                    if (modalRateEl) modalRateEl.innerText = `${state.tomanRate.toLocaleString()} تومان`;
+                    onModalAmountInput();
+                }
+            } catch(e) { console.error('Wallex fetch rate error', e); }
+        }
+
+        async function fetchProfile() {
+            try {
+                const res = await fetch(`/api/user/profile`, { headers: { 'x-user-id': 'user_123' } });
+                const data = await res.json();
+                if (data.success) {
+                    state.balance = data.user.balance;
+                    document.getElementById('user-balance').innerText = `$ ${state.balance.toFixed(2)}`;
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function fetchPrices() {
+            const statusEl = document.getElementById('live-api-status');
+            try {
+                statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span><span>در حال دریافت لیست زنده 5SIM...</span>`;
+                const res = await fetch('/api/provider/prices');
+                const data = await res.json();
+
+                if (data.success && data.prices) {
+                    state.rawPrices = data.prices;
+                    processPricesData();
+                    statusEl.className = 'inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-3 py-1.5 rounded-xl text-xs font-semibold self-start md:self-auto';
+                    statusEl.innerHTML = `<i class="fa-solid fa-check-circle text-emerald-600"></i><span>متصل به 5SIM و Wallex Rate (${state.tomanRate.toLocaleString()} تومان)</span>`;
+                } else {
+                    throw new Error('پاسخ نامعتبر از API');
+                }
+            } catch(e) {
+                console.error(e);
+                statusEl.className = 'inline-flex items-center gap-2 bg-red-50 text-red-700 border border-red-200/80 px-3 py-1.5 rounded-xl text-xs font-semibold self-start md:self-auto';
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-600"></i><span>خطا در دریافت لیست 5SIM</span>`;
+            }
+        }
+
+        function processPricesData() {
+            if (!state.rawPrices) return;
+
+            const serviceSet = new Set();
+            const countrySet = new Set();
+
+            for (const countryKey in state.rawPrices) {
+                countrySet.add(countryKey);
+                const countryProducts = state.rawPrices[countryKey];
+                for (const prodKey in countryProducts) {
+                    serviceSet.add(prodKey);
+                }
+            }
+
+            state.services = Array.from(serviceSet).map(key => {
+                const meta = SERVICE_MAP[key] || {
+                    name: key.charAt(0).toUpperCase() + key.slice(1),
+                    icon: 'fa-solid fa-comment-sms text-brand-500',
+                    popular: 999
+                };
+                return { id: key, name: meta.name, icon: meta.icon, popular: meta.popular };
+            }).sort((a, b) => a.popular - b.popular || a.name.localeCompare(b.name));
+
+            if (!state.services.find(s => s.id === state.selectedService)) {
+                state.selectedService = state.services[0]?.id || 'telegram';
+            }
+
+            renderServices();
+            renderCountries();
+            updateSummary();
+        }
+
+        // Search Handlers
+        function onServiceSearch() {
+            state.serviceQuery = document.getElementById('service-search').value.trim().toLowerCase();
+            renderServices();
+        }
+
+        function onCountrySearch() {
+            state.countryQuery = document.getElementById('country-search').value.trim().toLowerCase();
+            renderCountries();
+        }
+
+        // Render Services List
+        function renderServices() {
+            const container = document.getElementById('service-grid');
+            let list = state.services;
+
+            if (state.serviceCategory !== 'all' && CATEGORY_MAP[state.serviceCategory]) {
+                const categoryList = CATEGORY_MAP[state.serviceCategory];
+                list = list.filter(s => categoryList.includes(s.id));
+            }
+
+            if (state.serviceQuery) {
+                list = list.filter(s => s.id.toLowerCase().includes(state.serviceQuery) || s.name.toLowerCase().includes(state.serviceQuery));
+            }
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-6 text-center text-xs text-slate-400">هیچ سرویسی در این دسته‌بندی یافت نشد</div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(s => `
+                <div onclick="selectService('${s.id}')" id="service-card-${s.id}" 
+                     class="service-card border rounded-xl p-2.5 flex flex-col items-center justify-center gap-1.5 cursor-pointer transition hover:shadow-md ${state.selectedService === s.id ? 'border-brand-500 bg-brand-50/60 ring-2 ring-brand-500/20 font-bold' : 'border-slate-200 bg-white hover:border-slate-300'}">
+                    <i class="${s.icon} text-xl"></i>
+                    <span class="text-[11px] text-slate-800 text-center truncate w-full">${s.name}</span>
+                </div>
+            `).join('');
+        }
+
+        // Get Price & Stock for specific Country & Service
+        function getPriceAndStock(countryKey, serviceKey) {
+            if (!state.rawPrices || !state.rawPrices[countryKey] || !state.rawPrices[countryKey][serviceKey]) {
+                return { costUsd: 0, costToman: 0, count: 0, operator: 'any' };
+            }
+
+            const operatorsObj = state.rawPrices[countryKey][serviceKey];
+            let bestCostInStock = Infinity;
+            let bestOperatorInStock = 'any';
+            let bestCostOutOfStock = Infinity;
+            let totalCount = 0;
+
+            for (const opKey in operatorsObj) {
+                const item = operatorsObj[opKey];
+                const count = item.count || 0;
+                totalCount += count;
+                const cost = item.cost || 0;
+
+                if (cost > 0) {
+                    if (count > 0 && cost < bestCostInStock) {
+                        bestCostInStock = cost;
+                        bestOperatorInStock = opKey;
+                    } else if (count === 0 && cost < bestCostOutOfStock) {
+                        bestCostOutOfStock = cost;
+                    }
+                }
+            }
+
+            let finalCost = bestCostInStock !== Infinity ? bestCostInStock : (bestCostOutOfStock !== Infinity ? bestCostOutOfStock : 0);
+            let finalOperator = bestCostInStock !== Infinity ? bestOperatorInStock : 'any';
+
+            // 5SIM guest/prices returns prices in USD
+            let basePriceUsd = finalCost;
+            let retailPriceUsd = basePriceUsd * (1 + (state.profitPercentage / 100));
+            retailPriceUsd = Math.max(0.05, parseFloat(retailPriceUsd.toFixed(2)));
+            let costToman = Math.round(retailPriceUsd * state.tomanRate);
+
+            return { costUsd: retailPriceUsd, costToman: costToman, count: totalCount, operator: finalOperator };
+        }
+
+        // Render Countries List
+        function renderCountries() {
+            const container = document.getElementById('country-grid');
+            if (!state.rawPrices) {
+                container.innerHTML = `<div class="col-span-full py-6 text-center text-xs text-slate-400"><i class="fa-solid fa-spinner fa-spin text-lg mb-1 block"></i>در حال بارگذاری کشورها...</div>`;
+                return;
+            }
+
+            let list = [];
+            for (const countryKey in state.rawPrices) {
+                const countryData = state.rawPrices[countryKey];
+                if (countryData[state.selectedService]) {
+                    const info = getPriceAndStock(countryKey, state.selectedService);
+                    const meta = COUNTRY_MAP[countryKey] || {
+                        name: countryKey.charAt(0).toUpperCase() + countryKey.slice(1),
+                        flag: '🌐',
+                        code: ''
+                    };
+                    list.push({
+                        id: countryKey,
+                        name: meta.name,
+                        flag: meta.flag,
+                        code: meta.code,
+                        costUsd: info.costUsd,
+                        costToman: info.costToman,
+                        count: info.count,
+                        operator: info.operator,
+                        isFav: state.favorites.includes(countryKey)
+                    });
+                }
+            }
+
+            if (state.inStockOnly) {
+                list = list.filter(c => c.count > 0);
+            }
+
+            if (state.continentFilter === 'fav') {
+                list = list.filter(c => c.isFav);
+            } else if (state.continentFilter !== 'all' && CONTINENT_MAP[state.continentFilter]) {
+                const allowedKeys = CONTINENT_MAP[state.continentFilter];
+                list = list.filter(c => allowedKeys.includes(c.id));
+            }
+
+            if (state.countryQuery) {
+                list = list.filter(c => c.id.toLowerCase().includes(state.countryQuery) || c.name.toLowerCase().includes(state.countryQuery));
+            }
+
+            list.sort((a, b) => {
+                if (a.isFav !== b.isFav) return a.isFav ? -1 : 1;
+                if (state.sortMode === 'price-asc') return (a.costUsd - b.costUsd) || (b.count - a.count) || a.name.localeCompare(b.name);
+                if (state.sortMode === 'price-desc') return (b.costUsd - a.costUsd) || (b.count - a.count) || a.name.localeCompare(b.name);
+                if (state.sortMode === 'name-asc') return a.name.localeCompare(b.name);
+                return (b.count - a.count) || (a.costUsd - b.costUsd) || a.name.localeCompare(b.name);
+            });
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-6 text-center text-xs text-slate-400">هیچ کشوری با این مشخصات یافت نشد</div>`;
+                return;
+            }
+
+            if (!list.find(c => c.id === state.selectedCountry)) {
+                state.selectedCountry = list[0].id;
+            }
+
+            container.innerHTML = list.map(c => `
+                <div onclick="selectCountry('${c.id}')" id="country-card-${c.id}"
+                     class="country-card border rounded-xl p-2.5 flex items-center justify-between cursor-pointer transition hover:shadow-md ${state.selectedCountry === c.id ? 'border-brand-500 bg-brand-50/60 ring-2 ring-brand-500/20' : 'border-slate-200 bg-white hover:border-slate-300'}">
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleFavorite(event, '${c.id}')" class="text-xs transition ${c.isFav ? 'text-amber-400' : 'text-slate-300 hover:text-amber-400'}" title="افزودن به علاقه‌مندی‌ها">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                        <span class="text-xl">${c.flag}</span>
+                        <div>
+                            <div class="font-bold text-xs text-slate-800">${c.name}</div>
+                            <div class="text-[10px] text-slate-400 font-mono">${c.count > 0 ? `<span class="text-emerald-600 font-semibold">${c.count.toLocaleString()} موجود</span>` : '<span class="text-red-400">ناموجود</span>'}</div>
+                        </div>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-extrabold text-xs text-brand-600 dir-ltr">$ ${c.costUsd.toFixed(2)}</div>
+                        <div class="text-[10px] text-slate-400 font-medium">${c.costToman.toLocaleString()} تومان</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Selection Handlers
+        function selectService(id) {
+            state.selectedService = id;
+            renderServices();
+            renderCountries();
+            updateSummary();
+        }
+
+        function selectCountry(id) {
+            state.selectedCountry = id;
+            renderCountries();
+            updateSummary();
+        }
+
+        // Update Order Summary
+        function updateSummary() {
+            const service = state.services.find(s => s.id === state.selectedService) || { name: state.selectedService, icon: 'fa-solid fa-mobile' };
+            const countryMeta = COUNTRY_MAP[state.selectedCountry] || { name: state.selectedCountry, flag: '🌐' };
+            const info = getPriceAndStock(state.selectedCountry, state.selectedService);
+
+            document.getElementById('summary-icon').innerHTML = `<i class="${service.icon}"></i>`;
+            document.getElementById('summary-text').innerText = `${service.name} - ${countryMeta.flag} ${countryMeta.name}`;
+            document.getElementById('summary-stock').innerText = info.count > 0 ? `موجودی زنده: ${info.count.toLocaleString()} شماره` : `موجودی: ظرفیت تکمیلی`;
+            document.getElementById('summary-price').innerHTML = `
+                <span>$ ${info.costUsd.toFixed(2)}</span>
+                <span class="text-xs font-normal text-slate-400 block">${info.costToman.toLocaleString()} تومان</span>
+            `;
+        }
+
+        // Purchase Handler
+        async function purchaseNumber() {
+            const service = state.services.find(s => s.id === state.selectedService) || { name: state.selectedService, icon: 'fa-solid fa-mobile' };
+            const countryMeta = COUNTRY_MAP[state.selectedCountry] || { name: state.selectedCountry, flag: '🌐' };
+            const info = getPriceAndStock(state.selectedCountry, state.selectedService);
+
+            if (state.balance < info.cost) {
+                showToast('موجودی کافی نیست! لطفا حساب خود را شارژ کنید.', 'error');
+                openWalletModal();
+                return;
+            }
+
+            try {
+                showToast('در حال درخواست شماره از 5SIM...', 'info');
+                const res = await fetch(`/api/numbers/buy`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-user-id': 'user_123'
+                    },
+                    body: JSON.stringify({
+                        country: state.selectedCountry,
+                        service: state.selectedService,
+                        operator: info.operator || 'any',
+                        price: info.cost
+                    })
+                });
+                const data = await res.json();
+                
+                if(!data.success) {
+                    showToast(data.message || 'خطا در خرید شماره از 5SIM', 'error');
+                    return;
+                }
+
+                state.balance = data.newBalance;
+                document.getElementById('user-balance').innerText = `$ ${state.balance.toFixed(2)}`;
+
+                const newOrder = {
+                    id: data.order.id,
+                    service: service.name,
+                    icon: service.icon,
+                    phone: data.order.phone,
+                    country: `${countryMeta.flag} ${countryMeta.name}`,
+                    code: null,
+                    status: 'waiting',
+                    timeLeft: 1200 // 20 mins
+                };
+
+                state.activeNumbers.unshift(newOrder);
+                showToast(`شماره ${newOrder.phone} با موفقیت دریافت شد.`, 'success');
+                
+                switchTab('active');
+                renderActiveNumbers();
+            } catch(e) {
+                showToast('خطا در ارتباط با سرور یا تکمیل ظرفیت 5SIM', 'error');
+            }
+        }
+
+        async function fetch5simActiveOrders() {
+            try {
+                const res = await fetch('/api/numbers/active-from-5sim', { headers: { 'x-user-id': 'user_123' } });
+                const data = await res.json();
+                if (data.success && data.orders) {
+                    if (typeof data.newBalance === 'number') {
+                        state.balance = data.newBalance;
+                        document.getElementById('user-balance').innerText = `$ ${state.balance.toFixed(2)}`;
+                    }
+
+                    const returnedIds = data.orders.map(o => String(o.id));
+                    state.activeNumbers = state.activeNumbers.filter(o => returnedIds.includes(String(o.id)));
+
+                    data.orders.forEach(o => {
+                        const existingIndex = state.activeNumbers.findIndex(existing => String(existing.id) === String(o.id));
+                        const srvName = o.product || o.service || 'unknown';
+                        const serviceObj = SERVICE_MAP[srvName] || { name: srvName, icon: 'fa-solid fa-mobile' };
+                        const countryMeta = COUNTRY_MAP[o.country] || { name: o.country || 'unknown', flag: '🌐' };
+                        
+                        const mappedStatus = (o.smsCode || (o.sms && o.sms.length > 0)) ? 'received' : o.status === 'BANNED' ? 'banned' : o.status === 'CANCELED' ? 'cancelled' : 'waiting';
+                        const mappedCode = o.smsCode || (o.sms && o.sms.length > 0 ? o.sms[0].code : null);
+
+                        if (!o.phone) return; // Skip broken records
+
+                        const orderObj = {
+                            id: o.id,
+                            service: serviceObj.name,
+                            icon: serviceObj.icon,
+                            phone: o.phone,
+                            country: `${countryMeta.flag} ${countryMeta.name}`,
+                            operator: o.operator || 'Virtual4',
+                            price: o.price,
+                            code: mappedCode,
+                            status: mappedStatus,
+                            timeLeft: 1200
+                        };
+
+                        if (existingIndex !== -1) {
+                            state.activeNumbers[existingIndex] = { ...state.activeNumbers[existingIndex], ...orderObj };
+                        } else {
+                            state.activeNumbers.unshift(orderObj);
+                        }
+                    });
+
+                    renderActiveNumbers();
+                }
+            } catch(e) { console.error('fetch5simActiveOrders error', e); }
+        }
+
+        // Render Active Numbers List (5SIM Style Card UI)
+        async function renderActiveNumbers() {
+            const container = document.getElementById('active-list');
+            document.getElementById('active-badge').innerText = state.activeNumbers.length;
+
+            if (state.activeNumbers.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 space-y-2">
+                        <i class="fa-solid fa-inbox text-5xl mb-2 text-slate-300"></i>
+                        <p class="text-sm font-semibold text-slate-600">هیچ شماره فعالی ندارید.</p>
+                        <p class="text-xs text-slate-400">یک شماره از بخش دریافت شماره خریداری کنید تا پیامک‌ها در این صفحه نمایش داده شوند.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = state.activeNumbers.map(item => {
+                const minutes = Math.floor((item.timeLeft || 0) / 60);
+                const seconds = (item.timeLeft || 0) % 60;
+                const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                const dateStr = item.dateStr || new Date().toLocaleDateString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+
+                return `
+                    <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-sm max-w-lg mx-auto space-y-4 font-sans dir-rtl">
+                        <!-- Order Title -->
+                        <div class="text-center text-slate-600 font-bold text-sm tracking-wide">
+                            Order №${item.id}
+                        </div>
+
+                        <!-- Dotted Details Table -->
+                        <div class="space-y-2 text-xs text-slate-700 border-y border-slate-100 py-3">
+                            <div class="flex justify-between items-center border-b border-dotted border-slate-200 pb-1">
+                                <span class="text-slate-400 font-medium">Date</span>
+                                <span class="font-mono text-slate-800">${dateStr}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-dotted border-slate-200 pb-1">
+                                <span class="text-slate-400 font-medium">Service</span>
+                                <span class="font-bold text-slate-800 flex items-center gap-1.5"><i class="${item.icon}"></i> ${item.service}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-dotted border-slate-200 pb-1">
+                                <span class="text-slate-400 font-medium">Country</span>
+                                <span class="font-semibold text-slate-800">${item.country}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-dotted border-slate-200 pb-1">
+                                <span class="text-slate-400 font-medium">Operator</span>
+                                <span class="font-medium text-slate-800">${item.operator || 'Virtual4'}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-dotted border-slate-200 pb-1">
+                                <span class="text-slate-400 font-medium">Price</span>
+                                <span class="font-bold text-emerald-600 dir-ltr">$${item.price ? item.price.toFixed(2) : '0.2'}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400 font-medium">Rate</span>
+                                <span class="font-medium text-slate-700">42.88%</span>
+                            </div>
+                        </div>
+
+                        <!-- Phone Number Box with Dual Copy Buttons -->
+                        <div class="space-y-1">
+                            <div class="text-[11px] text-slate-400 text-left font-medium dir-ltr">Number</div>
+                            <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden shadow-xs bg-slate-50/50">
+                                <button onclick="copyToClipboard('${item.phone}')" title="کپی با کد کشور" class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-2.5 transition flex items-center gap-1 text-xs font-bold">
+                                    +<i class="fa-regular fa-copy"></i>
+                                </button>
+                                <input type="text" readonly value="${item.phone}" class="w-full text-center font-mono font-extrabold text-slate-900 text-base border-0 bg-transparent focus:outline-none dir-ltr">
+                                <button onclick="copyToClipboard('${item.phone.replace(/^\+/, '')}')" title="کپی بدون کد کشور" class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-2.5 transition text-xs font-bold">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Info Notice Banner -->
+                        <div class="bg-sky-50/80 border border-sky-100 text-sky-800 text-[11px] p-2.5 rounded-xl flex items-center gap-2 text-right">
+                            <i class="fa-solid fa-circle-info text-sky-500 text-sm"></i>
+                            <span>امکان دریافت تنها ۱ پیامک برای شماره این اپراتور وجود دارد</span>
+                        </div>
+
+                        <!-- IP / VPN Notice Box -->
+                        <div class="bg-slate-50 border border-slate-200/80 p-3 rounded-xl text-center space-y-1">
+                            <p class="text-[11px] text-slate-600">کشور IP شما باید با کشور شماره خریداری شده مطابقت داشته باشد.</p>
+                            <span class="inline-block bg-sky-100 text-sky-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold">حتماً از پروکسی یا VPN استفاده کنید</span>
+                            <div class="flex justify-center gap-1 pt-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-sky-300"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-sky-300"></span>
+                            </div>
+                        </div>
+
+                        <!-- Code from SMS OTP Box -->
+                        <div class="space-y-1.5 text-left dir-ltr">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-500 font-semibold">Code from SMS</span>
+                                <span class="bg-sky-100 text-sky-600 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold">?</span>
+                            </div>
+                            <div class="border border-slate-200 rounded-xl p-3 bg-white flex items-center justify-between min-h-[48px]">
+                                ${item.status === 'waiting'
+                                    ? `<div class="flex items-center gap-2 text-amber-500 text-xs font-medium animate-pulse mx-auto">
+                                         <i class="fa-solid fa-spinner fa-spin"></i>
+                                         <span>در انتظار پیامک...</span>
+                                       </div>`
+                                    : item.status === 'banned'
+                                    ? `<span class="text-red-500 text-xs font-bold mx-auto flex items-center gap-1"><i class="fa-solid fa-ban"></i> Banned (مسدود شده)</span>`
+                                    : item.status === 'cancelled'
+                                    ? `<span class="text-slate-400 text-xs font-bold mx-auto flex items-center gap-1"><i class="fa-solid fa-xmark"></i> Cancelled (لغو شده)</span>`
+                                    : `<div class="flex items-center justify-between w-full">
+                                         <span class="font-mono font-extrabold text-xl text-brand-600 tracking-wider">${item.code}</span>
+                                         <button onclick="copyToClipboard('${item.code}')" class="text-slate-400 hover:text-slate-600 p-1">
+                                            <i class="fa-regular fa-copy text-sm"></i>
+                                         </button>
+                                       </div>`
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Status & Progress Bar -->
+                        <div class="space-y-2 border-t border-slate-100 pt-3">
+                            <div class="flex justify-between items-center text-xs text-slate-600">
+                                <span class="font-medium">Status</span>
+                                <span class="font-bold flex items-center gap-1 text-slate-800">
+                                    ${item.status === 'waiting' 
+                                        ? '⏳ Received / Waiting' 
+                                        : item.status === 'banned' 
+                                        ? '🚫 Banned' 
+                                        : item.status === 'cancelled' 
+                                        ? '❌ Cancelled' 
+                                        : '✅ Received'}
+                                </span>
+                            </div>
+                            ${item.status === 'waiting' ? `
+                                <div class="text-xs text-slate-500 font-mono text-center">${formattedTime} left</div>
+                                <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-sky-500 h-full transition-all duration-1000" style="width: ${(item.timeLeft / 1200) * 100}%"></div>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        ${item.status === 'waiting' ? `
+                            <div class="grid grid-cols-2 gap-3 pt-2">
+                                <button onclick="banOrder('${item.id}')" class="border border-sky-500 text-sky-600 hover:bg-sky-50 font-bold py-2.5 rounded-xl transition text-xs">
+                                    Ban (گزارش خراب)
+                                </button>
+                                <button onclick="cancelOrder('${item.id}')" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2.5 rounded-xl transition shadow-md shadow-sky-500/20 text-xs">
+                                    Cancel (انصراف و عودت)
+                                </button>
+                            </div>
+                        ` : `
+                            <div class="pt-2">
+                                <button onclick="switchTab('buy')" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2.5 rounded-xl transition shadow-md text-xs flex items-center justify-center gap-1.5">
+                                    <span>خرید شماره جدید (Buy new number)</span>
+                                    <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Cancel Order Handler
+        async function cancelOrder(id) {
+            try {
+                showToast('در حال انصراف و عودت وجه به کیف‌پول...', 'info');
+                const res = await fetch(`/api/numbers/cancel/${id}`, {
+                    method: 'POST',
+                    headers: { 'x-user-id': 'user_123' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    state.activeNumbers = state.activeNumbers.filter(o => o.id != id);
+                    state.balance = data.newBalance;
+                    document.getElementById('user-balance').innerText = `$ ${state.balance.toFixed(2)}`;
+                    renderActiveNumbers();
+                    showToast(data.message, 'success');
+                    switchTab('buy');
+                } else {
+                    showToast(data.message || 'خطا در لغو سفارش', 'error');
+                }
+            } catch(e) {
+                showToast('خطا در ارتباط با سرور', 'error');
+            }
+        }
+
+        // Ban Order Handler
+        async function banOrder(id) {
+            try {
+                showToast('در حال مسدودسازی شماره و عودت وجه به کیف‌پول...', 'info');
+                const res = await fetch(`/api/numbers/ban/${id}`, {
+                    method: 'POST',
+                    headers: { 'x-user-id': 'user_123' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    state.activeNumbers = state.activeNumbers.filter(o => o.id != id);
+                    state.balance = data.newBalance;
+                    document.getElementById('user-balance').innerText = `$ ${state.balance.toFixed(2)}`;
+                    renderActiveNumbers();
+                    showToast(data.message, 'success');
+                    switchTab('buy');
+                } else {
+                    showToast(data.message || 'خطا در مسدودسازی شماره', 'error');
+                }
+            } catch (e) {
+                showToast('خطا در ارتباط با سرور', 'error');
+            }
+        }
+
+        // Timer Countdown Loop & Polling
+        function startTimers() {
+            setInterval(async () => {
+                let needsRender = false;
+                for (let i = 0; i < state.activeNumbers.length; i++) {
+                    const item = state.activeNumbers[i];
+                    if (item.timeLeft > 0) {
+                        item.timeLeft--;
+                        needsRender = true;
+                    }
+                    
+                    // Poll SMS every 5 seconds
+                    if(item.status === 'waiting' && item.timeLeft % 5 === 0) {
+                        try {
+                            const res = await fetch(`/api/numbers/check-sms/${item.id}`, {
+                                headers: { 'x-user-id': 'user_123' }
+                            });
+                            const data = await res.json();
+                            if(data.success) {
+                                if (data.status === 'RECEIVED') {
+                                    item.status = 'received';
+                                    item.code = data.code;
+                                    showToast(`کد تایید جدید دریافت شد: ${data.code}`, 'success');
+                                    try {
+                                        const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+                                        audio.play();
+                                    } catch (err) {}
+                                    needsRender = true;
+                                } else if (data.status === 'CANCELED' || data.status === 'TIMEOUT') {
+                                    showToast(`زمان سفارش #${item.id} منقضی یا لغو شد و مبلغ به کیف‌پول بازگشت.`, 'info');
+                                    if (typeof data.newBalance === 'number') {
+                                        state.balance = data.newBalance;
+                                        document.getElementById('user-balance').innerText = `$ ${state.balance.toFixed(2)}`;
+                                    }
+                                    state.activeNumbers = state.activeNumbers.filter(o => o.id != item.id);
+                                    needsRender = true;
+                                }
+                            }
+                        } catch(e) {}
+                    }
+                }
+                
+                if (needsRender && document.getElementById('tab-active').classList.contains('hidden') === false) {
+                    renderActiveNumbers();
+                }
+            }, 1000);
+        }
+
+        // Navigation Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-brand-50', 'text-brand-700', 'font-semibold');
+                el.classList.add('text-slate-600');
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.add('bg-brand-50', 'text-brand-700', 'font-semibold');
+                activeNav.classList.remove('text-slate-600');
+            }
+
+            if (tabId === 'active') {
+                fetch5simActiveOrders().then(() => renderActiveNumbers());
+            }
+
+            if (tabId === 'history') {
+                fetchTransactions();
+            }
+        }
+
+        // Modal Handlers
+        function openWalletModal() {
+            document.getElementById('modal-current-balance').innerText = `$ ${state.balance.toFixed(2)}`;
+            document.getElementById('modal-wallex-rate').innerText = `${state.tomanRate.toLocaleString()} تومان`;
+            onModalAmountInput();
+
+            const modal = document.getElementById('wallet-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeWalletModal() {
+            const modal = document.getElementById('wallet-modal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function setAmount(val) {
+            document.getElementById('custom-amount').value = val;
+            onModalAmountInput();
+        }
+
+        function onModalAmountInput() {
+            const val = parseFloat(document.getElementById('custom-amount').value) || 0;
+            const tomanVal = Math.round(val * state.tomanRate);
+            document.getElementById('modal-toman-val').innerText = tomanVal > 0 ? tomanVal.toLocaleString() : '۰';
+        }
+
+        async function fetchTransactions() {
+            const table = document.getElementById('transactions-table');
+            if (!table) return;
+            try {
+                const res = await fetch('/api/user/transactions', { headers: { 'x-user-id': 'user_123' } });
+                const data = await res.json();
+                if (data.success && data.transactions) {
+                    if (data.transactions.length === 0) {
+                        table.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-xs text-slate-400">هیچ تراکنش شارژی ثبت نشده است</td></tr>`;
+                        return;
+                    }
+
+                    table.innerHTML = data.transactions.map(t => {
+                        const dateStr = new Date(t.createdAt).toLocaleDateString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+                        const statusBadge = t.status === 'SUCCESS' 
+                            ? `<span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-md font-semibold">موفق</span>`
+                            : `<span class="bg-amber-100 text-amber-700 text-xs px-2 py-1 rounded-md font-semibold">در انتظار</span>`;
+
+                        return `
+                            <tr>
+                                <td class="p-3 font-mono text-xs text-slate-800 font-bold">${t.invoiceId || t.id}</td>
+                                <td class="p-3 text-xs">${t.gateway}</td>
+                                <td class="p-3 font-bold text-emerald-600 dir-ltr text-right">$ ${t.amountUsd.toFixed(2)}</td>
+                                <td class="p-3 font-mono text-xs text-slate-700">${t.amountToman.toLocaleString()} تومان</td>
+                                <td class="p-3 text-xs text-slate-500">${dateStr}</td>
+                                <td class="p-3">${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            } catch(e) { console.error('fetchTransactions error', e); }
+        }
+
+        let currentInvoice = null;
+
+        async function confirmTopUp() {
+            const amount = parseFloat(document.getElementById('custom-amount').value) || 0;
+            if (amount <= 0) {
+                showToast('لطفاً یک مبلغ معتبر وارد کنید.', 'error');
+                return;
+            }
+
+            const gatewayEl = document.querySelector('input[name="gateway"]:checked');
+            const gatewayVal = gatewayEl ? gatewayEl.value : 'wallex';
+
+            try {
+                showToast('در حال صدور فاکتور واریز تتر...', 'info');
+                const res = await fetch(`/api/payment/wallex/create`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-user-id': 'user_123'
+                    },
+                    body: JSON.stringify({ amountUsd: amount, gateway: gatewayVal })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    currentInvoice = data;
+                    closeWalletModal();
+
+                    document.getElementById('inv-id').innerText = data.invoiceId;
+                    document.getElementById('inv-amount-usd').innerText = `$ ${data.amountUsd.toFixed(2)}`;
+                    document.getElementById('inv-amount-toman').innerText = `${data.amountToman.toLocaleString()} تومان`;
+                    switchInvoiceNetwork('bsc');
+                    document.getElementById('inv-txid').value = '';
+
+                    const tetherModal = document.getElementById('tether-invoice-modal');
+                    tetherModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        tetherModal.classList.remove('opacity-0');
+                        tetherModal.querySelector('div').classList.remove('scale-95');
+                    }, 10);
+
+                    showToast('فاکتور پرداخت کریپتو با موفقیت صادر شد.', 'success');
+                } else {
+                    showToast(data.message || 'خطا در ایجاد فاکتور پرداخت', 'error');
+                }
+            } catch (e) {
+                showToast('خطا در ارتباط با سرور', 'error');
+            }
+        }
+
+        function switchInvoiceNetwork(net) {
+            if (!currentInvoice) return;
+            const bscBtn = document.getElementById('net-btn-bsc');
+            const trcBtn = document.getElementById('net-btn-trc20');
+            const labelEl = document.getElementById('inv-net-label');
+            const addrInput = document.getElementById('inv-address');
+            const qrImg = document.getElementById('inv-qr');
+
+            let addr = '';
+            if (net === 'bsc') {
+                addr = currentInvoice.bscAddress || '0x19b3c81ffe912e995c20cef4db50f289379bd9c7';
+                bscBtn.className = 'border border-brand-500 bg-brand-50 text-brand-700 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm';
+                trcBtn.className = 'border border-slate-200 text-slate-600 hover:border-brand-500 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5';
+                labelEl.innerHTML = 'آدرس واریز شبکه: <strong class="text-slate-800">BSC (BEP20)</strong>';
+            } else {
+                addr = currentInvoice.trc20Address || 'TD8ue5Ta8S9Hu1K1MwiVmRmKrcTsweD7xP';
+                trcBtn.className = 'border border-brand-500 bg-brand-50 text-brand-700 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm';
+                bscBtn.className = 'border border-slate-200 text-slate-600 hover:border-brand-500 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5';
+                labelEl.innerHTML = 'آدرس واریز شبکه: <strong class="text-slate-800">TRC20 (ترون)</strong>';
+            }
+
+            addrInput.value = addr;
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(addr)}`;
+        }
+
+        function closeTetherInvoiceModal() {
+            const modal = document.getElementById('tether-invoice-modal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function copyWalletAddress() {
+            const addr = document.getElementById('inv-address').value;
+            if (addr) {
+                copyToClipboard(addr);
+                showToast('آدرس ولت تتر با موفقیت کپی شد.', 'success');
+            }
+        }
+
+        async function submitTrc20Txid() {
+            const txid = document.getElementById('inv-txid').value;
+
+            if (!currentInvoice) {
+                showToast('فاکتور معتبری یافت نشد.', 'error');
+                return;
+            }
+
+            try {
+                showToast('در حال استعلام و ثبت کد پیگیری تراکنش...', 'info');
+                const res = await fetch('/api/payment/trc20/verify', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-user-id': 'user_123'
+                    },
+                    body: JSON.stringify({ invoiceId: currentInvoice.invoiceId, txid: txid })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    state.balance = data.newBalance;
+                    document.getElementById('user-balance').innerText = `$ ${state.balance.toFixed(2)}`;
+                    closeTetherInvoiceModal();
+                    showToast(data.message, 'success');
+                } else {
+                    showToast(data.message || 'خطا در تایید تراکنش', 'error');
+                }
+            } catch(e) {
+                showToast('خطا در ارتباط با سرور', 'error');
+            }
+        }
+
+        // Copy Helper
+        function copyToClipboard(text) {
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            showToast('کد فعال‌سازی با موفقیت کپی شد', 'success');
+        }
+
+        // Toast Notification System
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgColors = {
+                success: 'bg-emerald-600 text-white',
+                error: 'bg-red-600 text-white',
+                info: 'bg-slate-800 text-white'
+            };
+
+            toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-xl font-medium text-sm flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 ${bgColors[type]}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-bell'}"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>

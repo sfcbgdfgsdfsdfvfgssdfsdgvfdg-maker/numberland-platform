@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: numberland-platform
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_ADMIN_ID
+        sync: false
+      - key: WALLEX_API_KEY
+        sync: false
+      - key: WALLEX_USDT_TRC20_ADDRESS
+        sync: false
+      - key: WALLEX_USDT_BSC_ADDRESS
+        sync: false
+      - key: FIVESIM_API_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: VITE_GOOGLE_CLIENT_ID
+        sync: false
+      - key: PROFIT_MARGIN
+        value: "0.20"
