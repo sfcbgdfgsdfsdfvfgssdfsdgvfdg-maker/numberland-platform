@@ -52,11 +52,13 @@ app.get('/api/provider/prices', authController.optionalAuth, async (req, res) =>
     }
 });
 
-// Fallback for Single Page Application
+// Fallback for Single Page Application (compatible with Express 5)
 if (require('fs').existsSync(clientDist)) {
-    app.get('*', (req, res, next) => {
-        if (req.path.startsWith('/api')) return next();
-        res.sendFile(path.join(clientDist, 'index.html'));
+    app.use((req, res, next) => {
+        if (req.method === 'GET' && !req.path.startsWith('/api')) {
+            return res.sendFile(path.join(clientDist, 'index.html'));
+        }
+        next();
     });
 }
 
