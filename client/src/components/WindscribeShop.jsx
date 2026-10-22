@@ -456,6 +456,20 @@ export default function WindscribeShop({
                     موجودی انبار به اتمام رسیده است
                   </button>
                 )}
+
+                {/* Telegram Bot CTA */}
+                <div className="pt-2 border-t border-white/10 text-center">
+                  <a
+                    href="https://t.me/onstagh_bot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 text-xs text-sky-300 hover:text-white transition py-1 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-400/20 rounded-xl px-3 w-full"
+                  >
+                    <i className="fa-brands fa-telegram text-sky-400 text-sm"></i>
+                    <span>خرید مستقیم در تلگرام: <b>@onstagh_bot</b></span>
+                    <i className="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

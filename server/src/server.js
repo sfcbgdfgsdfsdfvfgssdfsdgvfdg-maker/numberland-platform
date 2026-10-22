@@ -61,6 +61,38 @@ app.get('/api/provider/prices', authController.optionalAuth, async (req, res) =>
     }
 });
 
+// Telegram Bot Webhook Endpoint
+const { initTelegramBot, getBot } = require('./services/telegramBot');
+
+app.post('/api/telegram-webhook', async (req, res) => {
+    try {
+        const botInstance = getBot();
+        if (botInstance) {
+            await botInstance.handleUpdate(req.body, res);
+            if (!res.headersSent) {
+                res.status(200).send('OK');
+            }
+        } else {
+            console.warn('⚠️ Telegram webhook update arrived before bot was ready.');
+            res.status(200).send('Bot initializing');
+        }
+    } catch (err) {
+        console.error('❌ Error handling Telegram webhook update:', err);
+        if (!res.headersSent) {
+            res.status(200).send('OK');
+        }
+    }
+});
+
+app.get('/api/telegram-webhook', (req, res) => {
+    res.json({
+        status: 'active',
+        service: 'Telegram Webhook Endpoint',
+        botReady: !!getBot(),
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Fallback for Single Page Application (compatible with Express 5)
 if (require('fs').existsSync(clientDist)) {
     app.use((req, res, next) => {
@@ -75,6 +107,9 @@ if (require('fs').existsSync(clientDist)) {
 async function start() {
     await initDatabase();
     
+    // Launch Telegram Bot
+    initTelegramBot();
+
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, '0.0.0.0', () => {
         const providerService = require('./services/providerService');
@@ -83,10 +118,6 @@ async function start() {
         console.log(`📦 Active Providers: ${active.map(p => p.displayName).join(', ') || 'None'}`);
         console.log(`🔒 Auth: JWT enabled`);
         console.log(`💾 Database: ${isUsingPostgres() ? 'Neon PostgreSQL (Cloud)' : 'SQLite (Local)'}`);
-
-        // Launch Telegram Bot
-        const { initTelegramBot } = require('./services/telegramBot');
-        initTelegramBot();
     });
 }
 

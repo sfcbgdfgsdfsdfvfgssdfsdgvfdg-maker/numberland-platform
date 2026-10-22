@@ -19,7 +19,20 @@ export default function Header({ balance, onOpenWallet, user, onLogout }) {
           </div>
 
           {/* Balance & Profile */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            {/* Telegram Bot Link Button */}
+            <a
+              href="https://t.me/onstagh_bot"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold shadow-md shadow-sky-500/20 transition group"
+              title="خرید مستقیم از ربات تلگرام سیم‌جت"
+            >
+              <i className="fa-brands fa-telegram text-base group-hover:scale-110 transition-transform"></i>
+              <span className="hidden sm:inline">خرید با ربات تلگرام</span>
+              <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full font-mono dir-ltr hidden md:inline">@onstagh_bot</span>
+            </a>
+
             {/* Wallet Balance */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-1.5 px-3 flex items-center gap-3">
               <div className="text-right">

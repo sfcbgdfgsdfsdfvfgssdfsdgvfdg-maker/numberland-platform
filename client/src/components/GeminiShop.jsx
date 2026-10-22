@@ -472,6 +472,20 @@ export default function GeminiShop({
                 <p className="text-[11px] text-slate-400 text-center leading-relaxed">
                   پس از کسر هزینه از کیف‌پول، لینک اختصاصی فعال‌سازی به صورت آنی همینجا و در بخش سفارشات تقدیم شما می‌شود.
                 </p>
+
+                {/* Telegram Bot Callout */}
+                <div className="pt-2 border-t border-slate-100 text-center">
+                  <a
+                    href="https://t.me/onstagh_bot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 text-xs text-violet-700 hover:text-violet-900 transition py-2 bg-violet-50 hover:bg-violet-100 border border-violet-200 rounded-xl px-3 w-full font-bold"
+                  >
+                    <i className="fa-brands fa-telegram text-violet-600 text-base"></i>
+                    <span>امکان خرید جمنای پرو ۱۸ ماهه در ربات تلگرام: <b>@onstagh_bot</b></span>
+                    <i className="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

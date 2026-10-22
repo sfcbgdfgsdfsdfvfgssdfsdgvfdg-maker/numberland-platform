@@ -218,15 +218,22 @@ async function initPostgresSchema() {
     `);
 
     // Card-to-card and Telegram columns
-    await sqlClient.query(`
-        ALTER TABLE transactions ADD COLUMN IF NOT EXISTS sender_card TEXT;
-        ALTER TABLE transactions ADD COLUMN IF NOT EXISTS tracking_code TEXT;
-        ALTER TABLE transactions ADD COLUMN IF NOT EXISTS receipt_image TEXT;
-        ALTER TABLE transactions ADD COLUMN IF NOT EXISTS admin_note TEXT;
-        ALTER TABLE transactions ADD COLUMN IF NOT EXISTS telegram_chat_id BIGINT;
-        ALTER TABLE users ADD COLUMN IF NOT EXISTS telegram_id BIGINT UNIQUE;
-        ALTER TABLE users ADD COLUMN IF NOT EXISTS telegram_username TEXT;
-    `);
+    const alterQueries = [
+        'ALTER TABLE transactions ADD COLUMN IF NOT EXISTS sender_card TEXT',
+        'ALTER TABLE transactions ADD COLUMN IF NOT EXISTS tracking_code TEXT',
+        'ALTER TABLE transactions ADD COLUMN IF NOT EXISTS receipt_image TEXT',
+        'ALTER TABLE transactions ADD COLUMN IF NOT EXISTS admin_note TEXT',
+        'ALTER TABLE transactions ADD COLUMN IF NOT EXISTS telegram_chat_id BIGINT',
+        'ALTER TABLE users ADD COLUMN IF NOT EXISTS telegram_id BIGINT UNIQUE',
+        'ALTER TABLE users ADD COLUMN IF NOT EXISTS telegram_username TEXT'
+    ];
+    for (const q of alterQueries) {
+        try {
+            await sqlClient.query(q);
+        } catch (e) {
+            // column already exists or minor notice
+        }
+    }
 
     await sqlClient.query(`
         INSERT INTO settings (key, value) VALUES ('card_number', '6037-9979-1234-5678')

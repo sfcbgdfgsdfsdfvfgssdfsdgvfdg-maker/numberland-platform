@@ -156,6 +156,32 @@ export default function Sidebar({ activeTab, onSwitchTab, activeNumbersCount = 0
           اکانت‌های ویندسکرایب با اتصال همزمان ۱۰ الی ۱۵ کاربر و جمنای پرو ۱۸ ماهه (مدل‌های 4 Argon و 3.1 Pro + ۲ تا ۵ ترابایت ابری) به صورت آنی تحویل داده می‌شوند.
         </p>
       </div>
+
+      {/* Telegram Bot Card */}
+      <div className="bg-gradient-to-br from-sky-600 via-sky-700 to-indigo-800 text-white p-4 rounded-2xl shadow-sm space-y-3 relative overflow-hidden border border-sky-400/20">
+        <div className="flex items-center gap-2.5">
+          <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center text-white text-xl shadow-inner">
+            <i className="fa-brands fa-telegram"></i>
+          </div>
+          <div>
+            <div className="font-bold text-sm">ربات تلگرام سیم‌جت</div>
+            <div className="text-[10px] text-sky-100">خرید مستقیم و تحویل آنی</div>
+          </div>
+        </div>
+        <p className="text-[11px] text-sky-100 leading-relaxed">
+          می‌توانید تمامی سرویس‌ها (ویندسکرایب Pro، جمنای ۱۸ ماهه و شارژ کیف‌پول) را مستقیماً در تلگرام خریداری نمایید.
+        </p>
+        <a
+          href="https://t.me/onstagh_bot"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 bg-white text-sky-700 hover:bg-sky-50 font-bold text-xs py-2 px-3 rounded-xl transition shadow-sm"
+        >
+          <i className="fa-brands fa-telegram text-base"></i>
+          <span>ورود به ربات (@onstagh_bot)</span>
+          <i className="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+        </a>
+      </div>
     </aside>
   );
 }

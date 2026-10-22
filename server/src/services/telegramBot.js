@@ -414,6 +414,11 @@ function initTelegramBot() {
     try {
         bot = new Telegraf(token);
 
+        // مدیریت خطاهای سراسری ربات برای جلوگیری از کرش
+        bot.catch((err, ctx) => {
+            console.error(`❌ Telegram bot unhandled error on ${ctx?.updateType || 'unknown'}:`, err?.message || err);
+        });
+
         // تنظیم دستورات رسمی تلگرام (دکمه دائمی Menu کنار کادر پیام)
         bot.telegram.setMyCommands([
             { command: 'start', description: '🏠 شروع مجدد و منوی اصلی' },
@@ -1035,18 +1040,34 @@ function initTelegramBot() {
             } catch (e) {}
         });
 
-        // لانچ ربات
+        // تشخیص محیط اجرا (روی Render از وبهوک استفاده می‌کنیم تا سرور با پیام کاربر بیدار شود)
+        const isRender = process.env.RENDER === 'true' || !!process.env.RENDER_EXTERNAL_URL || process.env.NODE_ENV === 'production';
+        const rawDomain = process.env.RENDER_EXTERNAL_URL || process.env.BASE_URL || 'https://simjet.onrender.com';
+        const webhookUrl = `${rawDomain.replace(/\/$/, '')}/api/telegram-webhook`;
+
         bot.telegram.getMe().then((me) => {
             console.log(`🤖 Telegram Bot (@${me.username}) connected and online!`);
         }).catch((err) => {
             console.error('❌ Telegram Bot getMe error:', err.message);
         });
 
-        bot.launch({
-            dropPendingUpdates: true
-        }).catch((e) => {
-            console.error('❌ Telegram Bot polling error:', e.message);
-        });
+        if (isRender) {
+            console.log(`📡 Configuring Telegram Webhook on Render: ${webhookUrl}`);
+            bot.telegram.setWebhook(webhookUrl, {
+                drop_pending_updates: false
+            }).then(() => {
+                console.log(`✅ Telegram Webhook successfully registered: ${webhookUrl}`);
+            }).catch((err) => {
+                console.error('❌ Failed to set Telegram webhook:', err.message);
+            });
+        } else {
+            console.log('🔄 Telegram Bot starting in polling mode (Local Dev)...');
+            bot.launch({
+                dropPendingUpdates: false
+            }).catch((e) => {
+                console.error('❌ Telegram Bot polling error:', e.message);
+            });
+        }
 
         process.once('SIGINT', () => bot && bot.stop('SIGINT'));
         process.once('SIGTERM', () => bot && bot.stop('SIGTERM'));

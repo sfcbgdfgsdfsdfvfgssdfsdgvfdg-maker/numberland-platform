@@ -286,6 +286,20 @@ function AuthPage({ onLogin }) {
             {isLogin ? 'ثبت‌نام کنید' : 'وارد شوید'}
           </button>
         </p>
+
+        {/* Telegram Bot Direct Purchase Option */}
+        <div className="mt-6 pt-5 border-t border-slate-100 text-center">
+          <div className="text-[11px] text-slate-500 mb-2">خرید مستقیم بدون ثبت‌نام در سایت:</div>
+          <a
+            href="https://t.me/onstagh_bot"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-bold text-xs py-3 px-4 rounded-xl shadow-md shadow-sky-500/20 transition"
+          >
+            <i className="fa-brands fa-telegram text-base"></i>
+            <span>ورود به ربات تلگرام سیم‌جت (@onstagh_bot)</span>
+          </a>
+        </div>
       </div>
     </div>
   );
@@ -603,6 +617,21 @@ function MainApp({ user, onLogout }) {
       </div>
 
       <WalletModal isOpen={walletModalOpen} onClose={() => setWalletModalOpen(false)} balance={balance} tomanRate={tomanRate} onShowToast={showToast} />
+
+      {/* Floating Telegram Bot Quick Purchase Button */}
+      <a
+        href="https://t.me/onstagh_bot"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white p-3 sm:px-4 sm:py-3 rounded-2xl shadow-xl shadow-sky-600/30 hover:scale-105 transition flex items-center gap-2.5 group cursor-pointer border border-white/20"
+        title="خرید سریع از ربات تلگرام سیم‌جت"
+      >
+        <i className="fa-brands fa-telegram text-2xl group-hover:scale-110 transition-transform"></i>
+        <div className="hidden sm:block text-right">
+          <div className="font-black text-xs leading-none">خرید با ربات تلگرام</div>
+          <div className="text-[10px] text-sky-100 font-mono mt-0.5 dir-ltr">@onstagh_bot</div>
+        </div>
+      </a>
 
       {/* Global Toast Notification (Always in front of all modals with z-[9999]) */}
       {toast && (
