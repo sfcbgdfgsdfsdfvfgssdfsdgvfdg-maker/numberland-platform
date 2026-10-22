@@ -749,57 +749,300 @@ function initTelegramBot() {
             }
         });
 
-        // ۱۰. اکشن شارژ کریپتو
+        // ۱۰. اکشن انتخاب شارژ با ارز دیجیتال تتر (USDT)
         bot.action('charge_crypto', async (ctx) => {
             try {
                 await ctx.answerCbQuery();
+                const db = getDb();
+                const user = await getOrCreateTelegramUser(ctx);
                 const bscAddress = process.env.WALLEX_USDT_BSC_ADDRESS || '0x19b3c81ffe912e995c20cef4db50f289379bd9c7';
                 const trc20Address = process.env.WALLEX_USDT_TRC20_ADDRESS || 'TD8ue5Ta8S9Hu1K1MwiVmRmKrcTsweD7xP';
                 const rate = await paymentService.getWallexRate();
 
+                const invoiceId = 'USDT_TG_' + Date.now().toString().slice(-8);
+
+                // ثبت اولیه فاکتور در دیتابیس
+                await db.run(
+                    `INSERT INTO transactions (user_id, invoice_id, amount_usd, gateway, status, telegram_chat_id)
+                     VALUES (?, ?, 0, 'crypto', 'PENDING', ?)`,
+                    [user.id, invoiceId, ctx.chat.id]
+                );
+                saveDatabase();
+
+                // فعال‌سازی حالت انتظار دریافت هش تراکنش
+                userStates.set(ctx.from.id, {
+                    action: 'WAITING_CRYPTO_TXID',
+                    invoiceId,
+                    amountUsd: 0
+                });
+
                 const msg = `🪙 <b>شارژ حساب با ارز دیجیتال تتر (USDT)</b>\n` +
                     `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `📈 نرخ لحظه‌ای تتر: <b>${rate.toLocaleString()} تومان</b>\n\n` +
-                    `⚡️ <b>شبکه BSC (BEP20 - کارمزد فوق‌العاده پایین):</b>\n` +
-                    `<code>${bscAddress}</code>\n` +
+                    `📊 نرخ لحظه‌ای تتر: <b>${rate.toLocaleString()} تومان</b>\n\n` +
+                    `⚡️ <b>شبکه BSC (BEP20 - کارمزد کم):</b>\n` +
+                    `👉 <code>${bscAddress}</code>\n` +
                     `<i>(جهت کپی آدرس لمس کنید)</i>\n\n` +
                     `🌐 <b>شبکه ترون (TRC20):</b>\n` +
-                    `<code>${trc20Address}</code>\n` +
+                    `👉 <code>${trc20Address}</code>\n` +
                     `<i>(جهت کپی آدرس لمس کنید)</i>\n\n` +
                     `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `پس از انتقال تتر، کد رهگیری هش (TXID) را ارسال نمایید.`;
+                    `🔖 شناسه فاکتور: <code>${invoiceId}</code>\n\n` +
+                    `👇 <i>یکی از مبالغ زیر را انتخاب فرمایید یا مستقیماً <b>کد رهگیری هش (TXID)</b> یا <b>عکس رسید</b> را همینجا ارسال نمایید:</i>`;
 
                 await ctx.reply(msg, {
                     parse_mode: 'HTML',
                     ...getMainKeyboard(),
                     ...Markup.inlineKeyboard([
-                        [Markup.button.callback('🔙 بازگشت به منوی اصلی', 'back_to_main')]
+                        [
+                            Markup.button.callback('۴ دلار (ویندسکرایب)', `init_crypto_4_${invoiceId}`),
+                            Markup.button.callback('۱۲ دلار (جمنای پرو)', `init_crypto_12_${invoiceId}`)
+                        ],
+                        [
+                            Markup.button.callback('۲۰ دلار', `init_crypto_20_${invoiceId}`),
+                            Markup.button.callback('۵۰ دلار', `init_crypto_50_${invoiceId}`)
+                        ],
+                        [
+                            Markup.button.callback('❌ لغو فاکتور و بازگشت', 'cancel_invoice')
+                        ]
                     ])
                 });
             } catch (err) {
                 console.error('charge_crypto error:', err);
+                ctx.reply('خطا در صدور فاکتور کریپتو.');
             }
         });
 
-        // ۱۱. دریافت فیش از کاربر با خروج ایمن
+        // ۱۰.۱ اکشن تعیین مبلغ فاکتور کریپتو
+        bot.action(/^init_crypto_(\d+)_([A-Za-z0-9_]+)$/, async (ctx) => {
+            try {
+                await ctx.answerCbQuery();
+                const usd = parseInt(ctx.match[1], 10);
+                const invoiceId = ctx.match[2];
+                const db = getDb();
+
+                await db.run('UPDATE transactions SET amount_usd = ? WHERE invoice_id = ?', [usd, invoiceId]);
+                saveDatabase();
+
+                userStates.set(ctx.from.id, {
+                    action: 'WAITING_CRYPTO_TXID',
+                    invoiceId,
+                    amountUsd: usd
+                });
+
+                const bscAddress = process.env.WALLEX_USDT_BSC_ADDRESS || '0x19b3c81ffe912e995c20cef4db50f289379bd9c7';
+                const trc20Address = process.env.WALLEX_USDT_TRC20_ADDRESS || 'TD8ue5Ta8S9Hu1K1MwiVmRmKrcTsweD7xP';
+
+                const planHtml = `🧾 <b>فاکتور شارژ ${usd}.00 دلار با تتر (USDT)</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `💵 <b>مبلغ قابل انتقال:</b> <code>${usd}.00 USDT</code>\n` +
+                    `🔖 شناسه فاکتور: <code>${invoiceId}</code>\n\n` +
+                    `⚡️ <b>آدرس شبکه BSC (BEP20):</b>\n👉 <code>${bscAddress}</code>\n\n` +
+                    `🌐 <b>آدرس شبکه ترون (TRC20):</b>\n👉 <code>${trc20Address}</code>\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `📸 <b>مرحله بعد:</b>\n` +
+                    `لطفاً پس از انتقال وجه، <b>کد رهگیری هش (TXID)</b> یا <b>تصویر اسکرین‌شات تراکنش</b> را همینجا ارسال فرمایید.`;
+
+                await ctx.reply(planHtml, {
+                    parse_mode: 'HTML',
+                    ...getMainKeyboard(),
+                    ...Markup.inlineKeyboard([
+                        [Markup.button.callback('❌ لغو فاکتور', 'cancel_invoice')]
+                    ])
+                });
+            } catch (err) {
+                console.error('init_crypto error:', err);
+            }
+        });
+
+        // ۱۱. دریافت فیش کارت به کارت یا کد رهگیری هش کریپتو (TXID)
         bot.on(['photo', 'text'], async (ctx, next) => {
             const state = userStates.get(ctx.from.id);
-            if (!state || state.action !== 'WAITING_CARD_RECEIPT') {
+
+            // اگر کاربر در هیچ وضعیتی نیست ولی یک هش تراکنش کریپتو (کد طولانی هگز مثل 0x...) فرستاده:
+            if (!state || (state.action !== 'WAITING_CARD_RECEIPT' && state.action !== 'WAITING_CRYPTO_TXID')) {
+                if (ctx.message.text) {
+                    const rawText = ctx.message.text.trim();
+                    const isTxidLike = /^(0x)?[a-fA-F0-9]{32,80}$/.test(rawText);
+                    if (isTxidLike) {
+                        try {
+                            const db = getDb();
+                            const user = await getOrCreateTelegramUser(ctx);
+                            const invoiceId = 'USDT_TG_' + Date.now().toString().slice(-8);
+
+                            await db.run(
+                                `INSERT INTO transactions (user_id, invoice_id, amount_usd, gateway, status, tracking_code, txid, telegram_chat_id)
+                                 VALUES (?, ?, 0, 'crypto', 'PENDING_APPROVAL', ?, ?, ?)`,
+                                [user.id, invoiceId, rawText, rawText, ctx.chat.id]
+                            );
+                            saveDatabase();
+
+                            await ctx.reply(
+                                `✅ <b>کد رهگیری تراکنش تتر (TXID) شما با موفقیت دریافت شد!</b>\n` +
+                                `━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                                `🔢 هش تراکنش:\n<code>${rawText}</code>\n\n` +
+                                `🔖 شناسه پیگیری: <code>${invoiceId}</code>\n\n` +
+                                `⏳ تراکنش جهت بررسی و شارژ حساب در صف تایید مدیریت قرار گرفت.`,
+                                {
+                                    parse_mode: 'HTML',
+                                    ...getMainKeyboard(),
+                                    ...Markup.inlineKeyboard([
+                                        [Markup.button.callback('🏠 بازگشت به منوی اصلی', 'back_to_main')]
+                                    ])
+                                }
+                            );
+
+                            if (adminId) {
+                                const userName = ctx.from.first_name || 'کاربر';
+                                const userHandle = ctx.from.username ? `@${ctx.from.username}` : 'ندارد';
+                                const adminMsg = `🔔 <b>واریز مستقیم تتر (TXID) - نیازمند تایید</b>\n` +
+                                    `━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                                    `👤 <b>کاربر:</b> ${userName} (${userHandle})\n` +
+                                    `🆔 <b>شناسه تلگرام:</b> <code>${ctx.from.id}</code>\n` +
+                                    `🔢 <b>هش تراکنش (TXID):</b>\n<code>${rawText}</code>\n\n` +
+                                    `🔖 <b>شناسه فاکتور:</b> <code>${invoiceId}</code>\n` +
+                                    `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                                    `👇 <i>جهت شارژ حساب، مبلغ تایید شده را انتخاب فرمایید:</i>`;
+
+                                await ctx.telegram.sendMessage(adminId, adminMsg, {
+                                    parse_mode: 'HTML',
+                                    ...Markup.inlineKeyboard([
+                                        [
+                                            Markup.button.callback('✅ تایید ۴ دلار (ویندسکرایب)', `admin_approve_${invoiceId}_usd_4`),
+                                            Markup.button.callback('✅ تایید ۱۲ دلار (جمنای)', `admin_approve_${invoiceId}_usd_12`)
+                                        ],
+                                        [
+                                            Markup.button.callback('✅ تایید ۲۰ دلار', `admin_approve_${invoiceId}_usd_20`),
+                                            Markup.button.callback('✅ تایید ۵۰ دلار', `admin_approve_${invoiceId}_usd_50`)
+                                        ],
+                                        [
+                                            Markup.button.callback('❌ رد درخواست', `admin_reject_${invoiceId}`)
+                                        ]
+                                    ])
+                                });
+                            }
+                            return;
+                        } catch (err) {
+                            console.error('Direct TXID error:', err);
+                        }
+                    }
+                }
                 return next();
             }
 
+            // خروج در صورت ارسال دستورات عمومی یا لغو
             if (ctx.message.text) {
                 const text = ctx.message.text.trim();
                 if (text.startsWith('/') || /^(🏠|انصراف|لغو|بازگشت|منوی اصلی|شروع|خرید|موجودی|سوابق|پشتیبانی|جمنای)/i.test(text)) {
                     userStates.delete(ctx.from.id);
                     if (/^(انصراف|لغو|بازگشت)/i.test(text) || text === '/cancel') {
-                        await ctx.reply('❌ عملیات ارسال رسید لغو شد.', getMainKeyboard());
+                        await ctx.reply('❌ عملیات ارسال فیش/رسید لغو شد.', getMainKeyboard());
                         return sendMainMenu(ctx);
                     }
                     return next();
                 }
             }
 
+            // ۱۱.الف) پردازش کد رهگیری هش تتر (WAITING_CRYPTO_TXID)
+            if (state.action === 'WAITING_CRYPTO_TXID') {
+                try {
+                    const db = getDb();
+                    const { invoiceId, amountUsd } = state;
+
+                    let trackingCode = '';
+                    let photoFileId = null;
+
+                    if (ctx.message.photo && ctx.message.photo.length > 0) {
+                        photoFileId = ctx.message.photo[ctx.message.photo.length - 1].file_id;
+                        trackingCode = ctx.message.caption || 'دارای تصویر رسید تتر';
+                    } else if (ctx.message.text) {
+                        trackingCode = ctx.message.text.trim();
+                    }
+
+                    await db.run(
+                        `UPDATE transactions 
+                         SET tracking_code = ?, status = 'PENDING_APPROVAL', txid = ?, receipt_image = ?
+                         WHERE invoice_id = ?`,
+                        [trackingCode, trackingCode, photoFileId, invoiceId]
+                    );
+                    saveDatabase();
+                    userStates.delete(ctx.from.id);
+
+                    // پاسخ فوری و قطعی به کاربر
+                    const userConfirmHtml = `✅ <b>کد رهگیری تراکنش تتر شما با موفقیت ثبت شد!</b>\n` +
+                        `━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                        `🔖 شناسه فاکتور: <code>${invoiceId}</code>\n` +
+                        `🔢 <b>هش تراکنش (TXID):</b>\n<code>${trackingCode}</code>\n\n` +
+                        (amountUsd > 0 ? `💵 مبلغ درخواستی: <b>${amountUsd}.00 دلار</b>\n\n` : '') +
+                        `⏳ تراکنش در صف بررسی و تایید قرار گرفت. پس از استعلام شبکه، موجودی کیف‌پول شما به‌صورت خودکار افزایش می‌یابد.`;
+
+                    await ctx.reply(userConfirmHtml, {
+                        parse_mode: 'HTML',
+                        ...getMainKeyboard(),
+                        ...Markup.inlineKeyboard([
+                            [Markup.button.callback('🏠 بازگشت به منوی اصلی', 'back_to_main')]
+                        ])
+                    });
+
+                    // اطلاع‌رسانی به ادمین همراه با دکمه‌های تایید و شارژ
+                    if (adminId) {
+                        const userName = ctx.from.first_name || 'کاربر';
+                        const userHandle = ctx.from.username ? `@${ctx.from.username}` : 'ندارد';
+
+                        const adminMsg = `🔔 <b>واریز جدید تتر (USDT) - نیازمند بررسی و شارژ</b>\n` +
+                            `━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                            `👤 <b>کاربر:</b> ${userName} (${userHandle})\n` +
+                            `🆔 <b>شناسه تلگرام:</b> <code>${ctx.from.id}</code>\n` +
+                            `🔢 <b>کد پیگیری (TXID):</b>\n<code>${trackingCode}</code>\n\n` +
+                            `🔖 <b>شناسه فاکتور:</b> <code>${invoiceId}</code>\n` +
+                            (amountUsd > 0 ? `💵 <b>مبلغ انتخابی کاربر:</b> <b>${amountUsd}.00 دلار</b>\n` : '') +
+                            `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                            `👇 <i>جهت شارژ حساب کاربر روی مبلغ مورد نظر بزنید:</i>`;
+
+                        let adminKeyboard;
+                        if (amountUsd > 0) {
+                            adminKeyboard = Markup.inlineKeyboard([
+                                [
+                                    Markup.button.callback(`✅ تأیید و شارژ (${amountUsd} دلار)`, `admin_approve_${invoiceId}`),
+                                    Markup.button.callback('❌ رد درخواست', `admin_reject_${invoiceId}`)
+                                ]
+                            ]);
+                        } else {
+                            adminKeyboard = Markup.inlineKeyboard([
+                                [
+                                    Markup.button.callback('✅ تایید ۴ دلار (ویندسکرایب)', `admin_approve_${invoiceId}_usd_4`),
+                                    Markup.button.callback('✅ تایید ۱۲ دلار (جمنای)', `admin_approve_${invoiceId}_usd_12`)
+                                ],
+                                [
+                                    Markup.button.callback('✅ تایید ۲۰ دلار', `admin_approve_${invoiceId}_usd_20`),
+                                    Markup.button.callback('✅ تایید ۵۰ دلار', `admin_approve_${invoiceId}_usd_50`)
+                                ],
+                                [
+                                    Markup.button.callback('❌ رد درخواست', `admin_reject_${invoiceId}`)
+                                ]
+                            ]);
+                        }
+
+                        if (photoFileId) {
+                            await ctx.telegram.sendPhoto(adminId, photoFileId, {
+                                caption: adminMsg,
+                                parse_mode: 'HTML',
+                                ...adminKeyboard
+                            });
+                        } else {
+                            await ctx.telegram.sendMessage(adminId, adminMsg, {
+                                parse_mode: 'HTML',
+                                ...adminKeyboard
+                            });
+                        }
+                    }
+                } catch (err) {
+                    console.error('Handle crypto txid error:', err);
+                    ctx.reply('خطا در ثبت کد رهگیری تتر.');
+                }
+                return;
+            }
+
+            // ۱۱.ب) پردازش رسید کارت به کارت (WAITING_CARD_RECEIPT)
             try {
                 const db = getDb();
                 const { invoiceId, amountUsd, amountToman } = state;
@@ -816,9 +1059,9 @@ function initTelegramBot() {
 
                 await db.run(
                     `UPDATE transactions 
-                     SET tracking_code = ?, status = 'PENDING_APPROVAL', txid = ?
+                     SET tracking_code = ?, status = 'PENDING_APPROVAL', txid = ?, receipt_image = ?
                      WHERE invoice_id = ?`,
-                    [trackingCode, trackingCode, invoiceId]
+                    [trackingCode, trackingCode, photoFileId, invoiceId]
                 );
                 saveDatabase();
 
@@ -878,14 +1121,22 @@ function initTelegramBot() {
             }
         });
 
-        // ۱۲. تأیید فیش توسط ادمین در تلگرام (`admin_approve_...`)
+        // ۱۲. تأیید فیش یا هش کریپتو توسط ادمین در تلگرام (`admin_approve_...`)
         bot.action(/^admin_approve_(.+)$/, async (ctx) => {
             try {
                 if (ctx.from.id !== adminId) {
                     return ctx.answerCbQuery('⛔️ شما دسترسی مدیریت ندارید.', { show_alert: true });
                 }
 
-                const invoiceId = ctx.match[1];
+                let param = ctx.match[1];
+                let customUsd = null;
+                if (param.includes('_usd_')) {
+                    const parts = param.split('_usd_');
+                    param = parts[0];
+                    customUsd = parseFloat(parts[1]);
+                }
+
+                const invoiceId = param;
                 const db = getDb();
 
                 const txRes = await db.exec(
@@ -903,9 +1154,9 @@ function initTelegramBot() {
                     return ctx.answerCbQuery('این فاکتور قبلاً تایید و شارژ شده است.', { show_alert: true });
                 }
 
-                const usd = parseFloat(amountUsd || 0);
+                const usd = customUsd !== null ? customUsd : parseFloat(amountUsd || 0);
 
-                await db.run("UPDATE transactions SET status = 'SUCCESS' WHERE invoice_id = ?", [invoiceId]);
+                await db.run("UPDATE transactions SET status = 'SUCCESS', amount_usd = ? WHERE invoice_id = ?", [usd, invoiceId]);
                 await db.run('UPDATE users SET balance = balance + ? WHERE id = ?', [usd, userId]);
                 saveDatabase();
 
