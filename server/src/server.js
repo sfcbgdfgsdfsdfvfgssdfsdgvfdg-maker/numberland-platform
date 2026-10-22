@@ -16,6 +16,15 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cors());
 
+// Health check endpoint for UptimeRobot / monitoring keep-alive
+app.get(['/health', '/ping', '/api/health'], (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        uptime: Math.round(process.uptime()),
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Serve static files
 const clientDist = path.join(__dirname, '../../client/dist');
 if (require('fs').existsSync(clientDist)) {
