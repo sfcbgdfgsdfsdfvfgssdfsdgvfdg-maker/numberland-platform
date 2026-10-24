@@ -151,38 +151,51 @@ function AuthPage({ onLogin }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-4" dir="rtl">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-[#080d19] flex items-center justify-center p-4 relative overflow-hidden font-sans" dir="rtl">
+      {/* Ambient background glows */}
+      <div className="absolute top-1/4 left-1/3 w-80 h-80 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-violet-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="glass-panel bg-[#0b132b]/95 border border-white/15 rounded-3xl shadow-2xl p-8 sm:p-9 w-full max-w-md text-white backdrop-blur-2xl relative z-10">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <i className="fa-solid fa-mobile-screen text-white text-2xl"></i>
+          <div className="w-16 h-16 bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-cyan-500/25 border border-cyan-400/30">
+            <i className="fa-solid fa-bolt text-white text-2xl"></i>
           </div>
-          <h1 className="text-2xl font-black text-slate-800">سیمجت</h1>
-          <p className="text-sm text-slate-500 mt-1">سامانه شماره مجازی</p>
+          <h1 className="text-2xl font-black text-white flex items-center justify-center gap-2">
+            <span>سیم‌جت</span>
+            <span className="text-xs bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-mono px-2 py-0.5 rounded-full font-black border border-cyan-300/30 shadow-sm">
+              PRO
+            </span>
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">سامانه شماره مجازی بین‌المللی، ویندسکرایب و جمنای پرو</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6 bg-slate-100 rounded-xl p-1">
+        <div className="flex gap-2 mb-6 bg-slate-900/80 border border-white/10 rounded-2xl p-1.5">
           <button
             onClick={() => { setIsLogin(true); setError(''); }}
-            className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition ${
-              isLogin ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+              isLogin
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/25'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
-            ورود
+            ورود به حساب
           </button>
           <button
             onClick={() => { setIsLogin(false); setError(''); }}
-            className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition ${
-              !isLogin ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+              !isLogin
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/25'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
-            ثبت‌نام
+            ثبت‌نام جدید
           </button>
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl mb-4 text-center">
+          <div className="bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs p-3 rounded-xl mb-4 text-center font-bold">
             {error}
           </div>
         )}
@@ -190,46 +203,46 @@ function AuthPage({ onLogin }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label className="text-xs text-slate-500 block mb-1">نام و نام خانوادگی</label>
+              <label className="text-xs text-slate-300 block mb-1 font-bold">نام و نام خانوادگی:</label>
               <input
                 type="text"
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 transition"
+                className="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/15 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition shadow-inner"
                 placeholder="علی محمدی"
               />
             </div>
           )}
 
           <div>
-            <label className="text-xs text-slate-500 block mb-1">ایمیل</label>
+            <label className="text-xs text-slate-300 block mb-1 font-bold">آدرس ایمیل:</label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 transition dir-ltr"
+              className="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/15 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition dir-ltr font-mono shadow-inner"
               placeholder="email@example.com"
             />
           </div>
 
           <div>
-            <label className="text-xs text-slate-500 block mb-1">رمز عبور</label>
+            <label className="text-xs text-slate-300 block mb-1 font-bold">رمز عبور:</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 transition dir-ltr"
-              placeholder="حداقل 6 کاراکتر"
+              className="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/15 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition dir-ltr font-mono shadow-inner"
+              placeholder="حداقل ۶ کاراکتر"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3.5 rounded-xl transition shadow-lg shadow-cyan-500/25 disabled:opacity-50 cursor-pointer"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -237,7 +250,7 @@ function AuthPage({ onLogin }) {
                 در حال پردازش...
               </span>
             ) : (
-              isLogin ? 'ورود' : 'ثبت‌نام'
+              isLogin ? 'ورود به داشبورد' : 'ساخت حساب کاربری'
             )}
           </button>
         </form>
@@ -245,10 +258,10 @@ function AuthPage({ onLogin }) {
         {/* Divider */}
         <div className="relative my-5">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-200"></div>
+            <div className="w-full border-t border-white/10"></div>
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-white px-3 text-slate-400 font-bold">یا</span>
+            <span className="bg-[#0b132b] px-3 text-slate-400 font-bold">یا</span>
           </div>
         </div>
 
@@ -257,11 +270,11 @@ function AuthPage({ onLogin }) {
           type="button"
           onClick={handleGoogleLogin}
           disabled={googleLoading}
-          className="w-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl transition shadow-sm flex items-center justify-center gap-3 text-sm cursor-pointer disabled:opacity-50"
+          className="w-full bg-white/5 hover:bg-white/10 border border-white/15 text-white font-bold py-3 px-4 rounded-xl transition shadow-md flex items-center justify-center gap-3 text-xs sm:text-sm cursor-pointer disabled:opacity-50 backdrop-blur-md"
         >
           {googleLoading ? (
-            <span className="flex items-center justify-center gap-2 text-slate-500">
-              <i className="fa-solid fa-spinner fa-spin text-emerald-600"></i>
+            <span className="flex items-center justify-center gap-2 text-slate-400">
+              <i className="fa-solid fa-spinner fa-spin text-cyan-400"></i>
               در حال اتصال به گوگل...
             </span>
           ) : (
@@ -278,25 +291,25 @@ function AuthPage({ onLogin }) {
         </button>
 
         <p className="text-xs text-slate-400 text-center mt-6">
-          {isLogin ? 'حساب ندارید؟' : 'قبلاً ثبت‌نام کردید؟'}
+          {isLogin ? 'حساب کاربری ندارید؟' : 'قبلاً ثبت‌نام کردید؟'}
           <button
             onClick={() => { setIsLogin(!isLogin); setError(''); }}
-            className="text-emerald-600 font-bold mr-1"
+            className="text-cyan-400 font-bold mr-1 hover:underline cursor-pointer"
           >
             {isLogin ? 'ثبت‌نام کنید' : 'وارد شوید'}
           </button>
         </p>
 
         {/* Telegram Bot Direct Purchase Option */}
-        <div className="mt-6 pt-5 border-t border-slate-100 text-center">
-          <div className="text-[11px] text-slate-500 mb-2">خرید مستقیم بدون ثبت‌نام در سایت:</div>
+        <div className="mt-6 pt-5 border-t border-white/10 text-center">
+          <div className="text-[11px] text-slate-400 mb-2">خرید مستقیم بدون ثبت‌نام در سایت:</div>
           <a
             href="https://t.me/onstagh_bot"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-bold text-xs py-3 px-4 rounded-xl shadow-md shadow-sky-500/20 transition"
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500/15 to-blue-600/15 hover:from-cyan-500/25 hover:to-blue-600/25 border border-cyan-500/30 text-cyan-300 hover:text-white font-bold text-xs py-3 px-4 rounded-xl shadow-md transition"
           >
-            <i className="fa-brands fa-telegram text-base"></i>
+            <i className="fa-brands fa-telegram text-base text-cyan-400"></i>
             <span>ورود به ربات تلگرام سیم‌جت (@onstagh_bot)</span>
           </a>
         </div>
@@ -514,7 +527,11 @@ function MainApp({ user, onLogout }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 flex flex-col font-sans dir-rtl">
+    <div className="min-h-screen bg-[#080d19] text-slate-100 flex flex-col font-sans dir-rtl relative overflow-x-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
+      {/* Ambient background glows */}
+      <div className="fixed top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+      <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
       <Header 
         balance={balance} 
         onOpenWallet={() => setWalletModalOpen(true)} 
@@ -522,7 +539,7 @@ function MainApp({ user, onLogout }) {
         onLogout={onLogout}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
         <Sidebar activeTab={activeTab} onSwitchTab={setActiveTab} activeNumbersCount={activeNumbers.length} user={user} />
 
         <main className="lg:col-span-9 space-y-6">
@@ -535,18 +552,18 @@ function MainApp({ user, onLogout }) {
                 />
                 <OperatorList operators={operators} selectedOperator={selectedOperator} onSelectOperator={setSelectedOperator} loading={loadingOperators} />
                 {selectedOperator && (
-                  <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between flex-wrap gap-3">
+                  <div className="glass-panel p-4 sm:p-5 rounded-3xl border border-white/10 shadow-2xl flex items-center justify-between flex-wrap gap-4 backdrop-blur-xl">
                     <div>
-                      <span className="text-xs text-slate-500 block">اپراتور و هزینه نهایی:</span>
-                      <span className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                      <span className="text-xs text-slate-400 block mb-1">اپراتور و هزینه نهایی:</span>
+                      <span className="text-sm font-black text-white flex items-center gap-2 flex-wrap">
                         <ProviderBadge provider={selectedOperator.provider} size="xs" />
                         <span className="capitalize">{selectedOperator.name}</span>
-                        <span className="text-emerald-600 font-extrabold text-base dir-ltr">$ {selectedOperator.cost?.toFixed(2)}</span>
+                        <span className="text-emerald-400 font-black text-lg dir-ltr font-mono">$ {selectedOperator.cost?.toFixed(2)}</span>
                       </span>
                     </div>
                     <button onClick={handleBuyNumber} disabled={buying}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg flex items-center gap-2 text-sm cursor-pointer">
-                      <i className="fa-solid fa-cart-shopping"></i>
+                      className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black px-7 py-3 rounded-2xl transition shadow-lg shadow-emerald-500/25 flex items-center gap-2 text-sm cursor-pointer disabled:opacity-50">
+                      <i className={`fa-solid ${buying ? 'fa-spinner fa-spin' : 'fa-cart-shopping'}`}></i>
                       <span>{buying ? 'در حال دریافت...' : 'دریافت آنی شماره'}</span>
                     </button>
                   </div>
@@ -692,8 +709,9 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
-        <i className="fa-solid fa-spinner fa-spin text-3xl text-emerald-500"></i>
+      <div className="min-h-screen bg-[#080d19] flex flex-col items-center justify-center gap-3">
+        <i className="fa-solid fa-circle-notch fa-spin text-4xl text-cyan-400"></i>
+        <span className="text-xs text-slate-400 font-mono">در حال بارگذاری سیم‌جت PRO...</span>
       </div>
     );
   }

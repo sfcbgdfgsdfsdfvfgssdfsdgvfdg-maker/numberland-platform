@@ -207,27 +207,35 @@ export default function WalletModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 transform transition-all font-sans dir-rtl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+      <div className="glass-panel bg-[#0b132b]/95 border border-white/15 text-slate-100 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-4 transform transition-all font-sans dir-rtl max-h-[92vh] overflow-y-auto backdrop-blur-2xl">
         {/* Header */}
-        <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-          <div>
-            <h3 className="font-bold text-slate-800 text-lg">
-              {currentInvoice
-                ? currentInvoice.isCard
-                  ? 'فاکتور واریز کارت به کارت'
-                  : 'فاکتور واریز تتر (USDT)'
-                : 'شارژ کیف‌پول و حساب'}
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {currentInvoice
-                ? currentInvoice.isCard
-                  ? 'انتقال وجه شتابی و ثبت مشخصات فیش'
-                  : 'آدرس ولت اختصاصی جهت واریز تتر'
-                : 'افزایش موجودی با کارت به کارت بانکی یا ارز دیجیتال'}
-            </p>
+        <div className="flex justify-between items-center border-b border-white/10 pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/25">
+              <i className="fa-solid fa-wallet text-base"></i>
+            </div>
+            <div>
+              <h3 className="font-black text-white text-base sm:text-lg">
+                {currentInvoice
+                  ? currentInvoice.isCard
+                    ? 'فاکتور واریز کارت به کارت'
+                    : 'فاکتور واریز تتر (USDT)'
+                  : 'شارژ کیف‌پول و حساب'}
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                {currentInvoice
+                  ? currentInvoice.isCard
+                    ? 'انتقال وجه شتابی و ثبت مشخصات فیش'
+                    : 'آدرس ولت اختصاصی جهت واریز تتر'
+                  : 'افزایش موجودی با کارت به کارت بانکی یا ارز دیجیتال'}
+              </p>
+            </div>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/10 transition cursor-pointer"
+          >
             <i className="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
@@ -236,16 +244,16 @@ export default function WalletModal({
           /* Step 1: Select Amount & Gateway */
           <>
             {/* Current Balance & Live Rate Header */}
-            <div className="bg-slate-50 border border-slate-200/80 p-3 rounded-xl flex items-center justify-between text-xs">
+            <div className="bg-slate-900/80 border border-white/10 p-3.5 rounded-2xl flex items-center justify-between text-xs shadow-inner">
               <div>
-                <span className="text-slate-500 block">موجودی فعلی شما:</span>
-                <span className="font-bold text-emerald-600 text-sm dir-ltr">
+                <span className="text-slate-400 block mb-0.5">موجودی فعلی شما:</span>
+                <span className="font-black text-emerald-400 text-base font-mono dir-ltr">
                   $ {typeof balance === 'number' ? balance.toFixed(2) : '0.00'}
                 </span>
               </div>
-              <div className="text-left border-r border-slate-200 pr-3">
-                <span className="text-slate-500 block">نرخ روز تتر:</span>
-                <span className="font-bold text-sky-600 font-mono">
+              <div className="text-left border-r border-white/10 pr-3.5">
+                <span className="text-slate-400 block mb-0.5">نرخ لحظه‌ای تتر (والکس):</span>
+                <span className="font-black text-cyan-400 font-mono text-sm">
                   {tomanRate.toLocaleString()} تومان
                 </span>
               </div>
@@ -253,21 +261,21 @@ export default function WalletModal({
 
             {/* Quick Amounts */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-700">
+              <label className="block text-xs font-bold text-slate-300">
                 انتخاب سریع مبلغ شارژ (دلار):
               </label>
-              <div className="grid grid-cols-5 gap-1.5">
+              <div className="grid grid-cols-5 gap-2">
                 {[5, 10, 25, 50, 100].map((val) => (
                   <button
                     key={val}
                     onClick={() => setAmountUsd(val)}
-                    className={`py-2 rounded-xl text-xs font-bold transition cursor-pointer border ${
+                    className={`py-2 rounded-xl text-xs font-mono font-bold transition cursor-pointer border ${
                       amountUsd === val
-                        ? 'border-sky-500 bg-sky-50 text-sky-700 shadow-sm'
-                        : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                        ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300 shadow-md shadow-cyan-500/20'
+                        : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
                     }`}
                   >
-                    $ {val}
+                    ${val}
                   </button>
                 ))}
               </div>
@@ -275,20 +283,20 @@ export default function WalletModal({
 
             {/* Custom Input */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-700">مبلغ دلخواه شارژ:</label>
+              <label className="block text-xs font-bold text-slate-300">مبلغ دلخواه شارژ:</label>
               <div className="relative">
                 <input
                   type="number"
                   min="1"
                   value={amountUsd}
                   onChange={(e) => setAmountUsd(parseFloat(e.target.value) || 0)}
-                  className="w-full border border-slate-200 rounded-xl p-3 pr-8 text-center font-extrabold text-slate-900 focus:outline-none focus:border-sky-500 dir-ltr text-lg"
+                  className="w-full bg-slate-900/90 border border-white/15 rounded-2xl p-3 pr-8 text-center font-black text-white focus:outline-none focus:border-cyan-400 dir-ltr text-xl font-mono shadow-inner transition"
                 />
-                <span className="absolute left-4 top-3.5 font-bold text-slate-400 text-sm">$</span>
+                <span className="absolute left-4 top-3.5 font-bold text-slate-400 text-sm font-mono">$</span>
               </div>
-              <div className="text-center text-xs text-slate-500 font-medium pt-1">
+              <div className="text-center text-xs text-slate-400 font-medium pt-1">
                 معادل پرداخت تقریبی:{' '}
-                <span className="font-bold text-sky-600 font-mono">
+                <span className="font-black text-cyan-400 font-mono text-sm">
                   {tomanEquivalent > 0 ? tomanEquivalent.toLocaleString() : '۰'}
                 </span>{' '}
                 تومان
@@ -297,15 +305,15 @@ export default function WalletModal({
 
             {/* Gateway Selector */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-700">انتخاب روش پرداخت:</label>
-              <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-300">انتخاب روش پرداخت:</label>
+              <div className="space-y-2.5">
                 {/* Option 1: Card to Card */}
                 <label
                   onClick={() => setGateway('card')}
-                  className={`flex items-center justify-between p-3.5 border rounded-xl cursor-pointer transition ${
+                  className={`flex items-center justify-between p-3.5 rounded-2xl cursor-pointer transition border ${
                     gateway === 'card'
-                      ? 'border-indigo-500 bg-indigo-50/60 ring-1 ring-indigo-400'
-                      : 'border-slate-200 hover:bg-slate-50'
+                      ? 'border-cyan-400 bg-cyan-950/40 ring-1 ring-cyan-400/50 shadow-md shadow-cyan-500/10'
+                      : 'border-white/10 bg-slate-900/60 hover:bg-slate-900/90'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -315,28 +323,28 @@ export default function WalletModal({
                       value="card"
                       checked={gateway === 'card'}
                       onChange={() => setGateway('card')}
-                      className="text-indigo-600"
+                      className="accent-cyan-400"
                     />
                     <div>
-                      <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
                         <span>کارت به کارت (واریز بانکی / شتاب)</span>
-                        <span className="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.2 rounded font-bold">
+                        <span className="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 px-2 py-0.5 rounded-full font-bold">
                           پیشنهادی
                         </span>
                       </div>
-                      <div className="text-[10px] text-slate-500">واریز آسان از طریق تمامی بانک‌ها و همراه بانک‌ها</div>
+                      <div className="text-[11px] text-slate-400 mt-0.5">واریز آسان از طریق تمامی بانک‌ها و همراه بانک‌ها</div>
                     </div>
                   </div>
-                  <i className="fa-solid fa-credit-card text-indigo-600 text-xl"></i>
+                  <i className="fa-solid fa-credit-card text-cyan-400 text-xl"></i>
                 </label>
 
                 {/* Option 2: Crypto USDT */}
                 <label
                   onClick={() => setGateway('wallex')}
-                  className={`flex items-center justify-between p-3.5 border rounded-xl cursor-pointer transition ${
+                  className={`flex items-center justify-between p-3.5 rounded-2xl cursor-pointer transition border ${
                     gateway === 'wallex'
-                      ? 'border-sky-500 bg-sky-50/60 ring-1 ring-sky-400'
-                      : 'border-slate-200 hover:bg-slate-50'
+                      ? 'border-amber-400 bg-amber-950/40 ring-1 ring-amber-400/50 shadow-md shadow-amber-500/10'
+                      : 'border-white/10 bg-slate-900/60 hover:bg-slate-900/90'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -346,14 +354,14 @@ export default function WalletModal({
                       value="wallex"
                       checked={gateway === 'wallex'}
                       onChange={() => setGateway('wallex')}
-                      className="text-sky-600"
+                      className="accent-amber-400"
                     />
                     <div>
-                      <div className="text-xs font-bold text-slate-800">درگاه پرداخت ارزی و تتر (USDT)</div>
-                      <div className="text-[10px] text-slate-500">پرداخت کریپتو روی شبکه‌های BSC و TRC20</div>
+                      <div className="text-xs font-bold text-white">درگاه پرداخت ارزی و تتر (USDT)</div>
+                      <div className="text-[11px] text-slate-400 mt-0.5">پرداخت کریپتو روی شبکه‌های BSC و TRC20</div>
                     </div>
                   </div>
-                  <i className="fa-solid fa-coins text-amber-500 text-xl"></i>
+                  <i className="fa-solid fa-coins text-amber-400 text-xl"></i>
                 </label>
               </div>
             </div>
@@ -361,43 +369,58 @@ export default function WalletModal({
             <button
               onClick={handleCreateInvoice}
               disabled={loading}
-              className={`w-full text-white font-bold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer ${
-                gateway === 'card' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-emerald-600 hover:bg-emerald-700'
+              className={`w-full text-white font-black py-3.5 rounded-2xl transition shadow-xl flex items-center justify-center gap-2 text-sm cursor-pointer ${
+                gateway === 'card'
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-cyan-500/25'
+                  : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 shadow-emerald-500/25'
               }`}
             >
               <i className="fa-solid fa-arrow-left"></i>
               <span>{loading ? 'در حال صدور فاکتور...' : (gateway === 'card' ? 'مشاهده شماره کارت و پرداخت' : 'ایجاد فاکتور کریپتو')}</span>
             </button>
+
+            {/* Telegram Bot Callout */}
+            <div className="pt-2 border-t border-white/10 text-center">
+              <a
+                href="https://t.me/onstagh_bot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 text-xs text-cyan-300 hover:text-cyan-200 transition py-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-xl px-3 w-full font-bold"
+              >
+                <i className="fa-brands fa-telegram text-cyan-400 text-sm"></i>
+                <span>امکان شارژ ولت و خرید در ربات تلگرام: <b>@onstagh_bot</b></span>
+              </a>
+            </div>
           </>
         ) : currentInvoice.isCard ? (
           /* Step 2: CARD TO CARD VIEW */
           <div className="space-y-4">
             {/* Beautiful Bank Card UI */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-tr from-slate-900 via-indigo-950 to-indigo-800 p-5 text-white shadow-xl border border-indigo-700/50 space-y-4">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-tr from-[#0a1026] via-[#101b42] to-[#0f2854] p-5 text-white shadow-2xl border border-cyan-400/30 space-y-4">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
-                  <div className="w-9 h-7 bg-amber-400/90 rounded-md border border-amber-300 flex items-center justify-center shadow-inner">
-                    <div className="w-5 h-3 border border-amber-600/70 rounded-xs"></div>
+                  <div className="w-9 h-7 bg-amber-400 rounded-md border border-amber-300 flex items-center justify-center shadow-inner">
+                    <div className="w-5 h-3 border border-amber-700/60 rounded-xs"></div>
                   </div>
-                  <span className="text-xs font-bold tracking-wide text-indigo-200">کارت بانکی مقصد</span>
+                  <span className="text-xs font-bold tracking-wide text-cyan-200">کارت بانکی شتاب</span>
                 </div>
                 <div className="text-left">
-                  <span className="text-xs font-bold text-amber-300">{currentInvoice.bankName || 'بانک ملی ایران'}</span>
+                  <span className="text-xs font-black text-amber-300">{currentInvoice.bankName || 'بانک ملی ایران'}</span>
                 </div>
               </div>
 
               {/* 16 Digit Card Number */}
-              <div className="text-center py-1">
-                <div className="text-lg font-mono font-black tracking-widest text-white drop-shadow-md dir-ltr select-all">
+              <div className="text-center py-2">
+                <div className="text-xl font-mono font-black tracking-widest text-white drop-shadow-lg dir-ltr select-all">
                   {formatCardNumber(currentInvoice.cardNumber)}
                 </div>
               </div>
 
               {/* Card Holder & Copy Button */}
-              <div className="flex justify-between items-center text-xs pt-1 border-t border-indigo-800/60">
+              <div className="flex justify-between items-center text-xs pt-2 border-t border-white/10">
                 <div>
-                  <span className="text-[10px] text-indigo-300 block">صاحب حساب:</span>
-                  <span className="font-bold text-white text-xs">{currentInvoice.cardHolder || 'مدیریت سیم‌جت'}</span>
+                  <span className="text-[10px] text-slate-300 block">صاحب حساب:</span>
+                  <span className="font-black text-white text-xs">{currentInvoice.cardHolder || 'مدیریت سیم‌جت'}</span>
                 </div>
                 <button
                   onClick={() => {
@@ -405,7 +428,7 @@ export default function WalletModal({
                     navigator.clipboard.writeText(cleanNum);
                     onShowToast('شماره کارت ۱۶ رقمی کپی شد.', 'success');
                   }}
-                  className="bg-indigo-500/30 hover:bg-indigo-500/60 border border-indigo-400/40 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  className="bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                 >
                   <i className="fa-regular fa-copy"></i>
                   <span>کپی شماره کارت</span>
@@ -414,31 +437,31 @@ export default function WalletModal({
             </div>
 
             {/* Invoice Summary */}
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-2">
+            <div className="bg-slate-900/80 p-4 rounded-2xl border border-white/10 text-xs space-y-2 shadow-inner">
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">مبلغ دقیق قابل واریز:</span>
-                <span className="font-extrabold text-base text-indigo-700 font-mono">
+                <span className="text-slate-400">مبلغ دقیق قابل واریز:</span>
+                <span className="font-black text-base text-cyan-400 font-mono">
                   {currentInvoice.amountToman ? currentInvoice.amountToman.toLocaleString() : '۰'} تومان
                 </span>
               </div>
-              <div className="flex justify-between items-center text-[11px] pt-1 border-t border-slate-100">
-                <span className="text-slate-500">معادل شارژ دلاری:</span>
-                <span className="font-bold text-emerald-600 font-mono">$ {currentInvoice.amountUsd.toFixed(2)}</span>
+              <div className="flex justify-between items-center text-[11px] pt-1.5 border-t border-white/10">
+                <span className="text-slate-400">معادل شارژ دلاری:</span>
+                <span className="font-bold text-emerald-400 font-mono">$ {currentInvoice.amountUsd.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center text-[11px]">
-                <span className="text-slate-500">شناسه فاکتور:</span>
-                <span className="font-mono text-slate-700 font-bold">{currentInvoice.invoiceId}</span>
+                <span className="text-slate-400">شناسه فاکتور:</span>
+                <span className="font-mono text-slate-300 font-bold">{currentInvoice.invoiceId}</span>
               </div>
             </div>
 
             {/* Receipt Form or Submitted State */}
             {cardSubmitted ? (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center space-y-2">
-                <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-lg">
+              <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-4 text-center space-y-2.5">
+                <div className="w-10 h-10 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto text-lg">
                   <i className="fa-solid fa-check"></i>
                 </div>
-                <h4 className="font-bold text-emerald-800 text-sm">رسید شما با موفقیت ثبت شد!</h4>
-                <p className="text-xs text-emerald-700 leading-relaxed">
+                <h4 className="font-black text-emerald-300 text-sm">رسید شما با موفقیت ثبت شد!</h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
                   فیش واریزی در صف بررسی مدیریت قرار گرفت. پس از استعلام بانکی، حساب شما به‌صورت آنی شارژ خواهد شد.
                 </p>
                 <button
@@ -446,63 +469,63 @@ export default function WalletModal({
                     setCurrentInvoice(null);
                     onClose();
                   }}
-                  className="mt-2 bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-700 cursor-pointer"
+                  className="mt-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-5 py-2 rounded-xl text-xs font-bold hover:from-emerald-400 hover:to-teal-500 cursor-pointer shadow-lg shadow-emerald-500/20"
                 >
                   متوجه شدم و بستن
                 </button>
               </div>
             ) : (
               <div className="space-y-3 pt-1">
-                <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                  <i className="fa-solid fa-file-invoice text-indigo-600"></i>
+                <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <i className="fa-solid fa-file-invoice text-cyan-400"></i>
                   <span>ثبت مشخصات و فیش واریزی:</span>
                 </div>
 
                 {/* Sender Card Number */}
                 <div className="space-y-1">
-                  <label className="block text-[11px] text-slate-600 font-medium">
-                    شماره کارت شما یا ۴ رقم آخر کارت: <span className="text-rose-500">*</span>
+                  <label className="block text-[11px] text-slate-300 font-medium">
+                    شماره کارت شما یا ۴ رقم آخر کارت: <span className="text-rose-400">*</span>
                   </label>
                   <input
                     type="text"
                     placeholder="مثال: ۵۸۵۹-xxxx-xxxx-۱۲۳۴ یا ۱۲۳۴"
                     value={senderCardInput}
                     onChange={(e) => setSenderCardInput(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl p-2.5 text-xs text-center focus:outline-none focus:border-indigo-500 dir-ltr font-mono"
+                    className="w-full bg-slate-900/90 border border-white/15 rounded-xl p-2.5 text-xs text-center focus:outline-none focus:border-cyan-400 dir-ltr font-mono text-white"
                   />
                 </div>
 
                 {/* Tracking Code */}
                 <div className="space-y-1">
-                  <label className="block text-[11px] text-slate-600 font-medium">
-                    شماره پیگیری / کد ارجاع فیش بانکی: <span className="text-rose-500">*</span>
+                  <label className="block text-[11px] text-slate-300 font-medium">
+                    شماره پیگیری / کد ارجاع فیش بانکی: <span className="text-rose-400">*</span>
                   </label>
                   <input
                     type="text"
                     placeholder="کد پیگیری دریافت شده از اپلیکیشن بانکی"
                     value={trackingCodeInput}
                     onChange={(e) => setTrackingCodeInput(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl p-2.5 text-xs text-center focus:outline-none focus:border-indigo-500 dir-ltr font-mono"
+                    className="w-full bg-slate-900/90 border border-white/15 rounded-xl p-2.5 text-xs text-center focus:outline-none focus:border-cyan-400 dir-ltr font-mono text-white"
                   />
                 </div>
 
                 {/* Optional Receipt Screenshot Upload */}
                 <div className="space-y-1">
-                  <label className="block text-[11px] text-slate-600 font-medium">
+                  <label className="block text-[11px] text-slate-300 font-medium">
                     تصویر رسید یا اسکرین‌شات واریز (اختیاری):
                   </label>
                   <div className="flex items-center gap-2">
-                    <label className="flex-1 flex items-center justify-center gap-2 p-2.5 border border-dashed border-slate-300 hover:border-indigo-400 rounded-xl bg-slate-50 text-xs text-slate-600 cursor-pointer transition">
-                      <i className="fa-solid fa-cloud-arrow-up text-indigo-500"></i>
+                    <label className="flex-1 flex items-center justify-center gap-2 p-2.5 border border-dashed border-white/20 hover:border-cyan-400 rounded-xl bg-slate-900/60 text-xs text-slate-300 cursor-pointer transition">
+                      <i className="fa-solid fa-cloud-arrow-up text-cyan-400"></i>
                       <span>{receiptPreview ? 'تغییر تصویر فیش' : 'انتخاب عکس فیش (JPG/PNG)'}</span>
                       <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                     </label>
                     {receiptPreview && (
-                      <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-slate-200 flex-shrink-0">
+                      <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-white/20 flex-shrink-0">
                         <img src={receiptPreview} alt="Receipt Preview" className="w-full h-full object-cover" />
                         <button
                           onClick={() => { setReceiptImage(null); setReceiptPreview(null); }}
-                          className="absolute inset-0 bg-slate-900/50 text-white flex items-center justify-center opacity-0 hover:opacity-100 transition"
+                          className="absolute inset-0 bg-black/60 text-white flex items-center justify-center opacity-0 hover:opacity-100 transition"
                         >
                           <i className="fa-solid fa-trash text-xs"></i>
                         </button>
@@ -515,14 +538,14 @@ export default function WalletModal({
                 <div className="grid grid-cols-2 gap-2 pt-2">
                   <button
                     onClick={() => setCurrentInvoice(null)}
-                    className="border border-slate-200 text-slate-600 hover:bg-slate-50 py-2.5 rounded-xl font-bold text-xs cursor-pointer"
+                    className="border border-white/15 text-slate-300 hover:bg-white/10 py-2.5 rounded-xl font-bold text-xs cursor-pointer transition"
                   >
                     بازگشت
                   </button>
                   <button
                     onClick={handleSubmitCardReceipt}
                     disabled={loading}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                    className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg shadow-cyan-500/20 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
                   >
                     <i className="fa-solid fa-check-circle"></i>
                     <span>{loading ? 'در حال ثبت...' : 'ثبت نهایی رسید'}</span>
@@ -534,26 +557,26 @@ export default function WalletModal({
         ) : (
           /* Step 2: CRYPTO USDT VIEW */
           <div className="space-y-4">
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-2 dir-rtl">
+            <div className="bg-slate-900/80 p-4 rounded-2xl border border-white/10 text-xs space-y-2 dir-rtl shadow-inner">
               <div className="flex justify-between">
-                <span className="text-slate-500">شماره فاکتور:</span>
-                <span className="font-mono font-bold text-slate-800">{currentInvoice.invoiceId}</span>
+                <span className="text-slate-400">شماره فاکتور:</span>
+                <span className="font-mono font-bold text-white">{currentInvoice.invoiceId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">مبلغ واریزی:</span>
-                <span className="font-bold text-emerald-600">$ {currentInvoice.amountUsd.toFixed(2)}</span>
+                <span className="text-slate-400">مبلغ واریزی:</span>
+                <span className="font-bold text-emerald-400 font-mono">$ {currentInvoice.amountUsd.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">معادل تومان:</span>
-                <span className="font-bold text-slate-700 font-mono">
+                <span className="text-slate-400">معادل تومان:</span>
+                <span className="font-bold text-cyan-400 font-mono">
                   {currentInvoice.amountToman.toLocaleString()} تومان
                 </span>
               </div>
             </div>
 
             {/* Connection Badge */}
-            <div className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 flex items-center gap-2">
-              <i className="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
+            <div className="text-[11px] text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2.5 flex items-center gap-2">
+              <i className="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
               <span>درگاه مستقیم تتر: استعلام و تایید واریز شما به صورت خودکار و آنی انجام خواهد شد.</span>
             </div>
 
@@ -563,19 +586,19 @@ export default function WalletModal({
                 onClick={() => setSelectedNetwork('bsc')}
                 className={`py-2.5 rounded-xl text-xs font-bold transition cursor-pointer border flex items-center justify-center gap-1.5 ${
                   selectedNetwork === 'bsc'
-                    ? 'border-amber-500 bg-amber-50 text-amber-800 shadow-sm ring-1 ring-amber-400'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    ? 'border-amber-400 bg-amber-500/20 text-amber-300 shadow-md shadow-amber-500/20 ring-1 ring-amber-400/50'
+                    : 'border-white/10 bg-slate-900/60 text-slate-300 hover:bg-slate-900/90'
                 }`}
               >
-                <i className="fa-solid fa-bolt text-amber-500 text-xs"></i>
+                <i className="fa-solid fa-bolt text-amber-400 text-xs"></i>
                 <span>BSC (BEP20 - پیش‌فرض)</span>
               </button>
               <button
                 onClick={() => setSelectedNetwork('trc20')}
                 className={`py-2.5 rounded-xl text-xs font-bold transition cursor-pointer border flex items-center justify-center gap-1.5 ${
                   selectedNetwork === 'trc20'
-                    ? 'border-sky-500 bg-sky-50 text-sky-700 shadow-sm ring-1 ring-sky-400'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300 shadow-md shadow-cyan-500/20 ring-1 ring-cyan-400/50'
+                    : 'border-white/10 bg-slate-900/60 text-slate-300 hover:bg-slate-900/90'
                 }`}
               >
                 <span>TRC20 (ترون)</span>
@@ -584,22 +607,22 @@ export default function WalletModal({
 
             {/* Deposit Address Box */}
             <div className="space-y-1">
-              <label className="block text-[11px] font-bold text-slate-600">
+              <label className="block text-[11px] font-bold text-slate-300">
                 آدرس ولت واریز تتر:
               </label>
-              <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+              <div className="flex items-center border border-white/15 rounded-xl overflow-hidden bg-slate-900/90">
                 <input
                   type="text"
                   readOnly
                   value={depositAddress}
-                  className="w-full p-2.5 text-xs font-mono font-bold text-slate-800 bg-transparent dir-ltr focus:outline-none"
+                  className="w-full p-2.5 text-xs font-mono font-bold text-cyan-300 bg-transparent dir-ltr focus:outline-none"
                 />
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(depositAddress);
                     onShowToast('آدرس ولت کپی شد.', 'success');
                   }}
-                  className="bg-sky-500 text-white px-3 py-2.5 text-xs font-bold cursor-pointer hover:bg-sky-600"
+                  className="bg-cyan-500 hover:bg-cyan-400 text-white px-3.5 py-2.5 text-xs font-bold cursor-pointer transition shrink-0"
                 >
                   کپی
                 </button>
@@ -607,8 +630,8 @@ export default function WalletModal({
             </div>
 
             {/* TXID Submission Input */}
-            <div className="space-y-1.5 pt-2">
-              <label className="block text-xs font-bold text-slate-700">
+            <div className="space-y-1.5 pt-1">
+              <label className="block text-xs font-bold text-slate-300">
                 ثبت کد پیگیری / Hash تراکنش (TXID):
               </label>
               <input
@@ -616,21 +639,21 @@ export default function WalletModal({
                 placeholder="کد TXID دریافت شده از کیف‌پول خود را وارد کنید"
                 value={txidInput}
                 onChange={(e) => setTxidInput(e.target.value)}
-                className="w-full border border-slate-200 rounded-xl p-3 text-xs font-mono text-center focus:outline-none focus:border-sky-500 dir-ltr"
+                className="w-full bg-slate-900/90 border border-white/15 rounded-xl p-3 text-xs font-mono text-white text-center focus:outline-none focus:border-cyan-400 dir-ltr shadow-inner"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2 pt-2">
               <button
                 onClick={() => setCurrentInvoice(null)}
-                className="border border-slate-200 text-slate-600 hover:bg-slate-50 py-2.5 rounded-xl font-bold text-xs cursor-pointer"
+                className="border border-white/15 text-slate-300 hover:bg-white/10 py-2.5 rounded-xl font-bold text-xs cursor-pointer transition"
               >
                 بازگشت
               </button>
               <button
                 onClick={handleVerifyTxid}
                 disabled={loading}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md cursor-pointer"
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg shadow-emerald-500/20 cursor-pointer disabled:opacity-50"
               >
                 {loading ? 'در حال استعلام...' : 'تایید و شارژ ولت'}
               </button>

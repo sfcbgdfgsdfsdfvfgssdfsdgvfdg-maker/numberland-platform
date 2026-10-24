@@ -1,12 +1,12 @@
 import React from 'react';
 
 const PROVIDER_STYLES = {
-    fivesim:      { bg: 'bg-emerald-100', text: 'text-emerald-700', border: 'border-emerald-300', icon: '📡' },
-    smsactivate:  { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-300', icon: '📱' },
-    smspool:      { bg: 'bg-violet-100', text: 'text-violet-700', border: 'border-violet-300', icon: '🎯' },
-    grizzlysms:   { bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-300', icon: '🐻' },
-    smsman:       { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-300', icon: '🕵️' },
-    onlinesim:    { bg: 'bg-cyan-100', text: 'text-cyan-700', border: 'border-cyan-300', icon: '🌐' }
+    fivesim:      { bg: 'bg-emerald-500/15', text: 'text-emerald-400', border: 'border-emerald-500/30', icon: '📡' },
+    smsactivate:  { bg: 'bg-sky-500/15', text: 'text-sky-400', border: 'border-sky-500/30', icon: '📱' },
+    smspool:      { bg: 'bg-violet-500/15', text: 'text-violet-400', border: 'border-violet-500/30', icon: '🎯' },
+    grizzlysms:   { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-500/30', icon: '🐻' },
+    smsman:       { bg: 'bg-rose-500/15', text: 'text-rose-400', border: 'border-rose-500/30', icon: '🕵️' },
+    onlinesim:    { bg: 'bg-cyan-500/15', text: 'text-cyan-400', border: 'border-cyan-500/30', icon: '🌐' }
 };
 
 const PROVIDER_NAMES = {

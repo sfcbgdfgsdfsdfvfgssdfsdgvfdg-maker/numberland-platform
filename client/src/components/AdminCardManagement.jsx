@@ -165,26 +165,26 @@ export default function AdminCardManagement({ onShowToast }) {
   return (
     <div className="space-y-6 dir-rtl font-sans">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 rounded-2xl p-6 text-white shadow-lg border border-indigo-800/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="glass-panel bg-gradient-to-r from-[#0b132b]/95 via-[#10193a]/90 to-[#080d19]/95 rounded-3xl p-6 sm:p-7 text-white shadow-2xl border border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 backdrop-blur-xl">
         <div>
-          <div className="flex items-center gap-2 text-indigo-300 text-xs font-bold uppercase tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-1">
             <i className="fa-solid fa-credit-card"></i>
             <span>پنل مدیریت پرداخت‌های شتابی</span>
           </div>
-          <h2 className="text-xl font-black text-white">مدیریت واریزهای کارت به کارت</h2>
-          <p className="text-xs text-indigo-200/80 mt-1">
+          <h2 className="text-xl sm:text-2xl font-black text-white">مدیریت واریزهای کارت به کارت</h2>
+          <p className="text-xs text-slate-400 mt-1">
             بررسی و تایید فیش‌های واریزی کاربران و تنظیمات شماره کارت بانکی مقصد
           </p>
         </div>
 
         {/* Tab switchers */}
-        <div className="flex bg-slate-800/80 p-1 rounded-xl border border-indigo-700/50">
+        <div className="flex bg-slate-900/90 p-1.5 rounded-2xl border border-white/10">
           <button
             onClick={() => setActiveTab('requests')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-2 ${
               activeTab === 'requests'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-indigo-200 hover:text-white'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <i className="fa-solid fa-list-check"></i>
@@ -197,10 +197,10 @@ export default function AdminCardManagement({ onShowToast }) {
           </button>
           <button
             onClick={() => setActiveTab('settings')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-2 ${
               activeTab === 'settings'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-indigo-200 hover:text-white'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <i className="fa-solid fa-gear"></i>
@@ -211,15 +211,15 @@ export default function AdminCardManagement({ onShowToast }) {
 
       {activeTab === 'settings' ? (
         /* Settings Section */
-        <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-6 max-w-2xl">
-          <div className="border-b border-slate-100 pb-4">
-            <h3 className="font-bold text-slate-800 text-base">مشخصات کارت بانکی جهت دریافت وجه</h3>
-            <p className="text-xs text-slate-500 mt-0.5">این اطلاعات در صفحه شارژ حساب به کاربران نمایش داده می‌شود.</p>
+        <div className="glass-panel rounded-3xl p-6 sm:p-7 border border-white/10 shadow-2xl space-y-6 max-w-2xl backdrop-blur-xl">
+          <div className="border-b border-white/10 pb-4">
+            <h3 className="font-black text-white text-base">مشخصات کارت بانکی جهت دریافت وجه</h3>
+            <p className="text-xs text-slate-400 mt-0.5">این اطلاعات در صفحه شارژ حساب به کاربران نمایش داده می‌شود.</p>
           </div>
 
           <form onSubmit={handleSaveSettings} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
                 شماره کارت بانکی (۱۶ رقمی):
               </label>
               <input
@@ -227,13 +227,13 @@ export default function AdminCardManagement({ onShowToast }) {
                 value={cardNumber}
                 onChange={(e) => setCardNumber(e.target.value)}
                 placeholder="6037-xxxx-xxxx-xxxx"
-                className="w-full border border-slate-200 rounded-xl p-3 text-sm font-mono dir-ltr focus:outline-none focus:border-indigo-500 font-bold"
+                className="w-full bg-slate-900/90 border border-white/15 rounded-xl p-3 text-sm font-mono dir-ltr focus:outline-none focus:border-cyan-400 text-white font-bold shadow-inner"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
                 نام و نام خانوادگی صاحب حساب:
               </label>
               <input
@@ -241,13 +241,13 @@ export default function AdminCardManagement({ onShowToast }) {
                 value={cardHolder}
                 onChange={(e) => setCardHolder(e.target.value)}
                 placeholder="مثال: امیر نوری"
-                className="w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-900/90 border border-white/15 rounded-xl p-3 text-sm focus:outline-none focus:border-cyan-400 text-white shadow-inner"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
                 نام بانک صادرکننده:
               </label>
               <input
@@ -255,22 +255,22 @@ export default function AdminCardManagement({ onShowToast }) {
                 value={bankName}
                 onChange={(e) => setBankName(e.target.value)}
                 placeholder="مثال: بانک ملی ایران / سامان / پاسارگاد"
-                className="w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-900/90 border border-white/15 rounded-xl p-3 text-sm focus:outline-none focus:border-cyan-400 text-white shadow-inner"
                 required
               />
             </div>
 
             <div className="pt-2">
-              <label className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer">
+              <label className="flex items-center gap-3 p-3 bg-slate-900/60 rounded-xl border border-white/10 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={enabled}
                   onChange={(e) => setEnabled(e.target.checked)}
-                  className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
+                  className="w-4 h-4 accent-cyan-400 rounded"
                 />
                 <div>
-                  <div className="text-xs font-bold text-slate-800">فعال بودن واریز کارت به کارت</div>
-                  <div className="text-[11px] text-slate-500">در صورت غیرفعال بودن، این گزینه در پنجره شارژ به کاربران نشان داده نمی‌شود.</div>
+                  <div className="text-xs font-bold text-white">فعال بودن واریز کارت به کارت</div>
+                  <div className="text-[11px] text-slate-400">در صورت غیرفعال بودن، این گزینه در پنجره شارژ به کاربران نشان داده نمی‌شود.</div>
                 </div>
               </label>
             </div>
@@ -278,7 +278,7 @@ export default function AdminCardManagement({ onShowToast }) {
             <button
               type="submit"
               disabled={savingSettings}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-md cursor-pointer flex items-center gap-2"
+              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black px-6 py-3 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20 cursor-pointer flex items-center gap-2 disabled:opacity-50"
             >
               <i className="fa-solid fa-floppy-disk"></i>
               <span>{savingSettings ? 'در حال ذخیره...' : 'ذخیره تنظیمات کارت بانکی'}</span>
@@ -287,47 +287,47 @@ export default function AdminCardManagement({ onShowToast }) {
         </div>
       ) : (
         /* Requests Section */
-        <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        <div className="glass-panel rounded-3xl p-6 sm:p-7 border border-white/10 shadow-2xl space-y-4 backdrop-blur-xl">
           {/* Filters Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-white/10 pb-4">
             <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
               <button
                 onClick={() => setStatusFilter('PENDING_APPROVAL')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   statusFilter === 'PENDING_APPROVAL'
-                    ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <i className="fa-solid fa-clock"></i>
+                <i className="fa-solid fa-clock text-amber-400"></i>
                 <span>در انتظار تایید ({pendingCount})</span>
               </button>
               <button
                 onClick={() => setStatusFilter('ALL')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
                   statusFilter === 'ALL'
-                    ? 'bg-indigo-100 text-indigo-800 border border-indigo-300'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <span>همه درخواست‌ها ({requests.length})</span>
               </button>
               <button
                 onClick={() => setStatusFilter('SUCCESS')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
                   statusFilter === 'SUCCESS'
-                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <span>تایید شده‌ها</span>
               </button>
               <button
                 onClick={() => setStatusFilter('REJECTED')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
                   statusFilter === 'REJECTED'
-                    ? 'bg-rose-100 text-rose-800 border border-rose-300'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'bg-rose-500/20 text-rose-300 border border-rose-400/40'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <span>رد شده‌ها</span>
@@ -336,23 +336,26 @@ export default function AdminCardManagement({ onShowToast }) {
 
             <button
               onClick={fetchRequests}
-              className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg flex items-center gap-1.5 transition cursor-pointer self-end sm:self-auto"
+              className="text-xs bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer self-end sm:self-auto"
             >
-              <i className="fa-solid fa-arrows-rotate"></i>
+              <i className="fa-solid fa-arrows-rotate text-cyan-400"></i>
               <span>به‌روزرسانی لیست</span>
             </button>
           </div>
 
           {loadingRequests ? (
-            <div className="py-12 text-center text-xs text-slate-400">در حال دریافت فیش‌های کارت به کارت...</div>
-          ) : filteredRequests.length === 0 ? (
             <div className="py-12 text-center text-xs text-slate-400">
+              <i className="fa-solid fa-circle-notch fa-spin text-cyan-400 text-xl mb-2 block"></i>
+              در حال دریافت فیش‌های کارت به کارت...
+            </div>
+          ) : filteredRequests.length === 0 ? (
+            <div className="py-12 text-center text-xs text-slate-500 bg-slate-900/40 rounded-2xl border border-white/5">
               هیچ فیشی با فیلتر انتخاب شده یافت نشد.
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-right text-xs">
-                <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-100">
+            <div className="overflow-x-auto rounded-2xl border border-white/10">
+              <table className="w-full text-right text-xs border-collapse">
+                <thead className="bg-slate-900/90 text-slate-400 font-bold border-b border-white/10">
                   <tr>
                     <th className="p-3">کاربر</th>
                     <th className="p-3">شناسه فاکتور</th>
@@ -366,7 +369,7 @@ export default function AdminCardManagement({ onShowToast }) {
                     <th className="p-3 text-center">عملیات</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-700">
+                <tbody className="divide-y divide-white/5 bg-slate-900/40 text-slate-300 font-medium">
                   {filteredRequests.map((r) => {
                     const dateStr = new Date(r.createdAt).toLocaleDateString('fa-IR', {
                       month: 'short',
@@ -376,35 +379,35 @@ export default function AdminCardManagement({ onShowToast }) {
                     });
 
                     return (
-                      <tr key={r.id || r.invoiceId} className="hover:bg-slate-50/60 transition">
+                      <tr key={r.id || r.invoiceId} className="hover:bg-white/5 transition">
                         {/* User */}
                         <td className="p-3">
-                          <div className="font-bold text-slate-900">{r.userEmail}</div>
+                          <div className="font-bold text-white">{r.userEmail}</div>
                           {r.userName && <div className="text-[10px] text-slate-400">{r.userName}</div>}
                         </td>
 
                         {/* Invoice */}
-                        <td className="p-3 font-mono text-[11px] font-bold text-slate-600">
+                        <td className="p-3 font-mono text-[11px] font-bold text-cyan-300">
                           {r.invoiceId}
                         </td>
 
                         {/* Toman */}
-                        <td className="p-3 font-mono font-bold text-indigo-700">
+                        <td className="p-3 font-mono font-bold text-white">
                           {r.amountToman ? parseInt(r.amountToman, 10).toLocaleString() : '۰'} تومان
                         </td>
 
                         {/* USD */}
-                        <td className="p-3 font-mono font-bold text-emerald-600 dir-ltr text-right">
+                        <td className="p-3 font-mono font-bold text-emerald-400 dir-ltr text-right">
                           $ {r.amountUsd ? r.amountUsd.toFixed(2) : '0.00'}
                         </td>
 
                         {/* Sender Card */}
-                        <td className="p-3 font-mono font-bold text-slate-800 dir-ltr text-right">
+                        <td className="p-3 font-mono font-bold text-slate-300 dir-ltr text-right">
                           {r.senderCard || '—'}
                         </td>
 
                         {/* Tracking Code */}
-                        <td className="p-3 font-mono font-bold text-slate-800">
+                        <td className="p-3 font-mono font-bold text-slate-300">
                           {r.trackingCode || '—'}
                         </td>
 
@@ -413,50 +416,50 @@ export default function AdminCardManagement({ onShowToast }) {
                           {r.receiptImage ? (
                             <button
                               onClick={() => setPreviewImage(r.receiptImage)}
-                              className="w-9 h-9 rounded-lg border border-slate-200 overflow-hidden hover:opacity-80 transition cursor-pointer"
+                              className="w-9 h-9 rounded-lg border border-white/20 overflow-hidden hover:opacity-80 transition cursor-pointer"
                               title="مشاهده رسید"
                             >
                               <img src={r.receiptImage} alt="Receipt" className="w-full h-full object-cover" />
                             </button>
                           ) : (
-                            <span className="text-slate-400 text-[10px]">بدون عکس</span>
+                            <span className="text-slate-500 text-[10px]">بدون عکس</span>
                           )}
                         </td>
 
                         {/* Date */}
-                        <td className="p-3 text-slate-500 text-[11px]">
+                        <td className="p-3 text-slate-400 text-[11px] font-mono">
                           {dateStr}
                         </td>
 
                         {/* Status */}
                         <td className="p-3">
                           {r.status === 'PENDING_APPROVAL' && (
-                            <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded-md text-[10px] font-bold inline-flex items-center gap-1">
+                            <span className="bg-amber-500/15 text-amber-400 border border-amber-500/30 px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1">
                               <i className="fa-solid fa-clock text-[9px]"></i>
                               <span>در انتظار بررسی</span>
                             </span>
                           )}
                           {r.status === 'SUCCESS' && (
-                            <span className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-md text-[10px] font-bold inline-flex items-center gap-1">
+                            <span className="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1">
                               <i className="fa-solid fa-check text-[9px]"></i>
                               <span>تایید شده</span>
                             </span>
                           )}
                           {r.status === 'REJECTED' && (
                             <div>
-                              <span className="bg-rose-100 text-rose-800 px-2 py-1 rounded-md text-[10px] font-bold inline-flex items-center gap-1">
+                              <span className="bg-rose-500/15 text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1">
                                 <i className="fa-solid fa-xmark text-[9px]"></i>
                                 <span>رد شده</span>
                               </span>
                               {r.adminNote && (
-                                <div className="text-[10px] text-rose-600 mt-0.5 truncate max-w-[120px]" title={r.adminNote}>
+                                <div className="text-[10px] text-rose-400 mt-0.5 truncate max-w-[120px]" title={r.adminNote}>
                                   {r.adminNote}
                                 </div>
                               )}
                             </div>
                           )}
                           {r.status === 'PENDING' && (
-                            <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-md text-[10px] font-medium">
+                            <span className="bg-white/5 text-slate-400 border border-white/10 px-2.5 py-1 rounded-full text-[10px] font-medium">
                               رسید ثبت نشده
                             </span>
                           )}
@@ -469,7 +472,7 @@ export default function AdminCardManagement({ onShowToast }) {
                               <button
                                 onClick={() => handleApprove(r.invoiceId)}
                                 disabled={actionLoadingId === r.invoiceId}
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition shadow-sm cursor-pointer flex items-center gap-1"
+                                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white px-3 py-1.5 rounded-xl text-[11px] font-bold transition shadow-md shadow-emerald-500/20 cursor-pointer flex items-center gap-1"
                                 title="تایید فیش و شارژ خودکار حساب"
                               >
                                 <i className="fa-solid fa-check"></i>
@@ -478,7 +481,7 @@ export default function AdminCardManagement({ onShowToast }) {
                               <button
                                 onClick={() => setRejectModalData({ invoiceId: r.invoiceId, reason: 'اطلاعات واریزی با حساب مطابقت ندارد' })}
                                 disabled={actionLoadingId === r.invoiceId}
-                                className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer"
+                                className="bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition cursor-pointer"
                                 title="رد فیش"
                               >
                                 <i className="fa-solid fa-xmark"></i>
@@ -486,7 +489,7 @@ export default function AdminCardManagement({ onShowToast }) {
                               </button>
                             </div>
                           ) : (
-                            <span className="text-slate-400 text-[10px]">—</span>
+                            <span className="text-slate-600 text-[10px]">—</span>
                           )}
                         </td>
                       </tr>
@@ -501,28 +504,28 @@ export default function AdminCardManagement({ onShowToast }) {
 
       {/* Reject Modal */}
       {rejectModalData && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
-            <h3 className="font-bold text-slate-800 text-sm">رد فیش کارت به کارت</h3>
-            <p className="text-xs text-slate-500">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="glass-panel bg-[#0b132b]/95 border border-white/15 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+            <h3 className="font-bold text-white text-sm">رد فیش کارت به کارت</h3>
+            <p className="text-xs text-slate-400">
               لطفاً علت رد این فیش را برای اطلاع کاربر بنویسید:
             </p>
             <textarea
               rows="3"
               value={rejectModalData.reason}
               onChange={(e) => setRejectModalData({ ...rejectModalData, reason: e.target.value })}
-              className="w-full border border-slate-200 rounded-xl p-2.5 text-xs focus:outline-none focus:border-rose-500"
+              className="w-full bg-slate-900/90 border border-white/15 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-rose-400"
             />
             <div className="grid grid-cols-2 gap-2 pt-1">
               <button
                 onClick={() => setRejectModalData(null)}
-                className="border border-slate-200 text-slate-600 py-2 rounded-xl text-xs font-bold hover:bg-slate-50 cursor-pointer"
+                className="border border-white/15 text-slate-300 py-2.5 rounded-xl text-xs font-bold hover:bg-white/10 cursor-pointer transition"
               >
                 انصراف
               </button>
               <button
                 onClick={handleRejectConfirm}
-                className="bg-rose-600 hover:bg-rose-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer"
+                className="bg-rose-600 hover:bg-rose-500 text-white py-2.5 rounded-xl text-xs font-bold cursor-pointer transition shadow-md shadow-rose-600/30"
               >
                 تایید رد درخواست
               </button>
@@ -535,11 +538,11 @@ export default function AdminCardManagement({ onShowToast }) {
       {previewImage && (
         <div
           onClick={() => setPreviewImage(null)}
-          className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 cursor-pointer"
+          className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 cursor-pointer"
         >
-          <div className="relative max-w-lg max-h-[85vh] bg-white rounded-2xl overflow-hidden shadow-2xl p-2">
-            <img src={previewImage} alt="Receipt Full" className="max-h-[80vh] w-auto mx-auto object-contain rounded-xl" />
-            <div className="text-center py-2 text-xs text-slate-600 font-bold">
+          <div className="relative max-w-lg max-h-[85vh] glass-panel bg-[#0b132b]/90 border border-white/20 rounded-3xl overflow-hidden shadow-2xl p-3">
+            <img src={previewImage} alt="Receipt Full" className="max-h-[80vh] w-auto mx-auto object-contain rounded-2xl" />
+            <div className="text-center py-2 text-xs text-slate-400 font-bold">
               برای بستن کلیک کنید
             </div>
           </div>

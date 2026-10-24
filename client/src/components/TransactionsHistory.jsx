@@ -31,41 +31,49 @@ export default function TransactionsHistory({ onShowToast }) {
 
   return (
     <div className="space-y-6 dir-rtl font-sans">
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-        <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900">تاریخچه تراکنش‌های مالی و شارژ</h2>
-            <p className="text-xs text-slate-500 mt-0.5">وضعیت و سوابق تمامی فاکتورهای کارت به کارت و کریپتو</p>
+      <div className="glass-panel rounded-3xl p-6 sm:p-7 border border-white/10 shadow-2xl space-y-5 backdrop-blur-xl">
+        <div className="flex justify-between items-center border-b border-white/10 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 flex items-center justify-center text-lg">
+              <i className="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+              <h2 className="text-lg font-black text-white">تاریخچه تراکنش‌های مالی و شارژ</h2>
+              <p className="text-xs text-slate-400 mt-0.5">وضعیت و سوابق تمامی فاکتورهای کارت به کارت و درگاه کریپتو</p>
+            </div>
           </div>
           <button
             onClick={fetchTransactions}
-            className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
+            className="text-xs bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer"
           >
-            <i className="fa-solid fa-arrows-rotate"></i>
+            <i className="fa-solid fa-arrows-rotate text-cyan-400"></i>
             <span>به‌روزرسانی</span>
           </button>
         </div>
 
         {loading ? (
-          <div className="text-center py-8 text-xs text-slate-400">در حال دریافت تراکنش‌ها...</div>
+          <div className="text-center py-12 text-xs text-slate-400">
+            <i className="fa-solid fa-circle-notch fa-spin text-cyan-400 text-xl mb-2 block"></i>
+            در حال دریافت تراکنش‌ها...
+          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-right text-sm">
-              <thead className="bg-slate-50 text-slate-500 font-medium">
+          <div className="overflow-x-auto rounded-2xl border border-white/10">
+            <table className="w-full text-right text-xs border-collapse">
+              <thead className="bg-slate-900/90 text-slate-400 font-bold border-b border-white/10">
                 <tr>
-                  <th className="p-3 rounded-r-lg">کد فاکتور</th>
-                  <th className="p-3">روش پرداخت</th>
-                  <th className="p-3">مبلغ دلاری</th>
-                  <th className="p-3">معادل تومانی</th>
-                  <th className="p-3">مشخصات پیگیری</th>
-                  <th className="p-3">تاریخ</th>
-                  <th className="p-3 rounded-l-lg">وضعیت</th>
+                  <th className="p-3.5">کد فاکتور</th>
+                  <th className="p-3.5">روش پرداخت</th>
+                  <th className="p-3.5">مبلغ دلاری</th>
+                  <th className="p-3.5">معادل تومانی</th>
+                  <th className="p-3.5">مشخصات پیگیری</th>
+                  <th className="p-3.5">تاریخ</th>
+                  <th className="p-3.5 text-center">وضعیت</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700 text-xs">
+              <tbody className="divide-y divide-white/5 bg-slate-900/40 text-slate-300 font-medium">
                 {transactions.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="p-6 text-center text-xs text-slate-400">
+                    <td colSpan="7" className="p-10 text-center text-xs text-slate-500">
                       هیچ تراکنش شارژی ثبت نشده است.
                     </td>
                   </tr>
@@ -79,65 +87,65 @@ export default function TransactionsHistory({ onShowToast }) {
                     });
 
                     return (
-                      <tr key={t.id || t.invoiceId} className="hover:bg-slate-50/60 transition">
-                        <td className="p-3 font-mono text-xs text-slate-800 font-bold">
+                      <tr key={t.id || t.invoiceId} className="hover:bg-white/5 transition">
+                        <td className="p-3.5 font-mono text-xs text-cyan-300 font-bold">
                           {t.invoiceId || t.id}
                         </td>
-                        <td className="p-3">
+                        <td className="p-3.5">
                           {t.gateway === 'card' ? (
-                            <span className="inline-flex items-center gap-1 text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded text-[11px] font-bold border border-indigo-100">
-                              <i className="fa-solid fa-credit-card text-indigo-500"></i>
+                            <span className="inline-flex items-center gap-1.5 text-cyan-300 bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                              <i className="fa-solid fa-credit-card text-cyan-400"></i>
                               <span>کارت به کارت</span>
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-sky-700 bg-sky-50 px-2 py-0.5 rounded text-[11px] font-bold border border-sky-100">
-                              <i className="fa-solid fa-coins text-amber-500"></i>
+                            <span className="inline-flex items-center gap-1.5 text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                              <i className="fa-solid fa-coins text-amber-400"></i>
                               <span>تتر (USDT)</span>
                             </span>
                           )}
                         </td>
-                        <td className="p-3 font-bold text-emerald-600 dir-ltr text-right">
+                        <td className="p-3.5 font-black text-emerald-400 font-mono dir-ltr text-right">
                           $ {t.amountUsd ? t.amountUsd.toFixed(2) : '0.00'}
                         </td>
-                        <td className="p-3 font-mono text-slate-700 font-bold">
+                        <td className="p-3.5 font-mono text-white font-bold">
                           {t.amountToman ? parseInt(t.amountToman, 10).toLocaleString() : '۰'} تومان
                         </td>
-                        <td className="p-3 font-mono text-slate-600">
+                        <td className="p-3.5 font-mono text-slate-400">
                           {t.trackingCode ? (
-                            <div title="کد پیگیری">{t.trackingCode}</div>
+                            <div title="کد پیگیری" className="text-slate-200">{t.trackingCode}</div>
                           ) : t.txid ? (
-                            <div className="truncate max-w-[100px]" title={t.txid}>{t.txid}</div>
+                            <div className="truncate max-w-[120px] text-cyan-400" title={t.txid}>{t.txid}</div>
                           ) : (
-                            <span className="text-slate-300">—</span>
+                            <span className="text-slate-600">—</span>
                           )}
                         </td>
-                        <td className="p-3 text-slate-500">{dateStr}</td>
-                        <td className="p-3">
+                        <td className="p-3.5 text-slate-400 font-mono text-[11px]">{dateStr}</td>
+                        <td className="p-3.5 text-center">
                           {t.status === 'SUCCESS' && (
-                            <span className="bg-emerald-100 text-emerald-800 text-[11px] px-2 py-1 rounded-md font-bold inline-flex items-center gap-1">
+                            <span className="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[11px] px-3 py-1 rounded-full font-black inline-flex items-center gap-1 shadow-sm">
                               <i className="fa-solid fa-check text-[10px]"></i>
                               <span>موفق</span>
                             </span>
                           )}
                           {t.status === 'PENDING_APPROVAL' && (
-                            <span className="bg-amber-100 text-amber-800 text-[11px] px-2 py-1 rounded-md font-bold inline-flex items-center gap-1">
+                            <span className="bg-amber-500/15 text-amber-400 border border-amber-500/30 text-[11px] px-3 py-1 rounded-full font-black inline-flex items-center gap-1 shadow-sm">
                               <i className="fa-solid fa-clock text-[10px]"></i>
                               <span>در انتظار بررسی مدیریت</span>
                             </span>
                           )}
                           {t.status === 'REJECTED' && (
                             <div>
-                              <span className="bg-rose-100 text-rose-800 text-[11px] px-2 py-1 rounded-md font-bold inline-flex items-center gap-1">
+                              <span className="bg-rose-500/15 text-rose-400 border border-rose-500/30 text-[11px] px-3 py-1 rounded-full font-black inline-flex items-center gap-1 shadow-sm">
                                 <i className="fa-solid fa-xmark text-[10px]"></i>
                                 <span>رد شده</span>
                               </span>
                               {t.adminNote && (
-                                <div className="text-[10px] text-rose-600 mt-0.5">{t.adminNote}</div>
+                                <div className="text-[10px] text-rose-400 mt-1">{t.adminNote}</div>
                               )}
                             </div>
                           )}
                           {t.status === 'PENDING' && (
-                            <span className="bg-slate-100 text-slate-600 text-[11px] px-2 py-1 rounded-md font-medium">
+                            <span className="bg-white/5 text-slate-400 border border-white/10 text-[11px] px-3 py-1 rounded-full font-medium">
                               در انتظار پرداخت
                             </span>
                           )}
